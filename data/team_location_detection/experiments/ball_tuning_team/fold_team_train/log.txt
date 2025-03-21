@@ -1,0 +1,97 @@
+[2025-02-17 00:41:55,065][INFO]: train - epoch: 0, lr: 2.1429e-05, train_loss: 0.1454194
+[2025-02-17 00:51:13,262][INFO]: train - epoch: 1, lr: 4.2857e-05, train_loss: 0.1168875
+[2025-02-17 01:00:30,563][INFO]: train - epoch: 2, lr: 6.4286e-05, train_loss: 0.1086288
+[2025-02-17 01:09:47,584][INFO]: train - epoch: 3, lr: 8.5714e-05, train_loss: 0.1041784
+[2025-02-17 01:19:04,729][INFO]: train - epoch: 4, lr: 0.00010714, train_loss: 0.1003719
+[2025-02-17 01:28:19,948][INFO]: train - epoch: 5, lr: 0.00012857, train_loss: 0.09857792
+[2025-02-17 01:37:37,024][INFO]: train - epoch: 6, lr: 0.00015, train_loss: 0.09355715
+[2025-02-17 01:51:48,248][INFO]: train - epoch: 0, lr: 0.00014959, train_loss: 0.09340244
+[2025-02-17 01:56:39,924][INFO]: val - epoch: 0, val_loss: 0.1460905, val_average_precision: 0.878879, val_average_precision_right: 0.8933607, val_average_precision_left: 0.8643973, val_binary_accuracy: 0.7725594, val_binary_accuracy_right: 0.7736148, val_binary_accuracy_left: 0.771504
+[2025-02-17 01:56:40,572][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-000-0.878879.pth'
+[2025-02-17 02:05:57,619][INFO]: train - epoch: 1, lr: 0.00014838, train_loss: 0.0902786
+[2025-02-17 02:10:47,845][INFO]: val - epoch: 1, val_loss: 0.163572, val_average_precision: 0.8868792, val_average_precision_right: 0.8996041, val_average_precision_left: 0.8741543, val_binary_accuracy: 0.7864116, val_binary_accuracy_right: 0.7881266, val_binary_accuracy_left: 0.7846966
+[2025-02-17 02:10:48,500][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-001-0.886879.pth'
+[2025-02-17 02:20:05,851][INFO]: train - epoch: 2, lr: 0.00014637, train_loss: 0.08686626
+[2025-02-17 02:24:56,181][INFO]: val - epoch: 2, val_loss: 0.1646274, val_average_precision: 0.8992821, val_average_precision_right: 0.9065536, val_average_precision_left: 0.8920106, val_binary_accuracy: 0.7869393, val_binary_accuracy_right: 0.7941953, val_binary_accuracy_left: 0.7796834
+[2025-02-17 02:24:56,829][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-002-0.899282.pth'
+[2025-02-17 02:34:13,818][INFO]: train - epoch: 3, lr: 0.00014358, train_loss: 0.08467351
+[2025-02-17 02:39:04,223][INFO]: val - epoch: 3, val_loss: 0.1609083, val_average_precision: 0.9104743, val_average_precision_right: 0.9167772, val_average_precision_left: 0.9041714, val_binary_accuracy: 0.798285, val_binary_accuracy_right: 0.8034301, val_binary_accuracy_left: 0.7931398
+[2025-02-17 02:39:04,881][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-003-0.910474.pth'
+[2025-02-17 02:48:22,045][INFO]: train - epoch: 4, lr: 0.00014005, train_loss: 0.08535764
+[2025-02-17 02:53:12,537][INFO]: val - epoch: 4, val_loss: 0.1624956, val_average_precision: 0.9108481, val_average_precision_right: 0.9145276, val_average_precision_left: 0.9071686, val_binary_accuracy: 0.7986807, val_binary_accuracy_right: 0.7984169, val_binary_accuracy_left: 0.7989446
+[2025-02-17 02:53:13,584][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-004-0.910848.pth'
+[2025-02-17 03:02:31,754][INFO]: train - epoch: 5, lr: 0.00013582, train_loss: 0.08361451
+[2025-02-17 03:07:22,266][INFO]: val - epoch: 5, val_loss: 0.1523587, val_average_precision: 0.9106073, val_average_precision_right: 0.9199919, val_average_precision_left: 0.9012228, val_binary_accuracy: 0.8006596, val_binary_accuracy_right: 0.805277, val_binary_accuracy_left: 0.7960422
+[2025-02-17 03:07:22,919][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-005-0.910607.pth'
+[2025-02-17 03:16:39,132][INFO]: train - epoch: 6, lr: 0.00013093, train_loss: 0.08122811
+[2025-02-17 03:21:28,790][INFO]: val - epoch: 6, val_loss: 0.154425, val_average_precision: 0.9106271, val_average_precision_right: 0.9178164, val_average_precision_left: 0.9034379, val_binary_accuracy: 0.8072559, val_binary_accuracy_right: 0.8068602, val_binary_accuracy_left: 0.8076517
+[2025-02-17 03:21:29,441][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-006-0.910627.pth'
+[2025-02-17 03:30:47,112][INFO]: train - epoch: 7, lr: 0.00012543, train_loss: 0.07743782
+[2025-02-17 03:35:39,492][INFO]: val - epoch: 7, val_loss: 0.1744392, val_average_precision: 0.9079273, val_average_precision_right: 0.9103724, val_average_precision_left: 0.9054822, val_binary_accuracy: 0.8005277, val_binary_accuracy_right: 0.8013193, val_binary_accuracy_left: 0.7997361
+[2025-02-17 03:35:40,143][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-007-0.907927.pth'
+[2025-02-17 03:44:57,537][INFO]: train - epoch: 8, lr: 0.00011939, train_loss: 0.07513493
+[2025-02-17 03:49:48,361][INFO]: val - epoch: 8, val_loss: 0.2323055, val_average_precision: 0.9004669, val_average_precision_right: 0.9046183, val_average_precision_left: 0.8963155, val_binary_accuracy: 0.7980211, val_binary_accuracy_right: 0.7984169, val_binary_accuracy_left: 0.7976253
+[2025-02-17 03:49:49,011][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-008-0.900467.pth'
+[2025-02-17 03:59:07,260][INFO]: train - epoch: 9, lr: 0.00011288, train_loss: 0.07306983
+[2025-02-17 04:03:57,700][INFO]: val - epoch: 9, val_loss: 0.1486082, val_average_precision: 0.9154215, val_average_precision_right: 0.9218117, val_average_precision_left: 0.9090313, val_binary_accuracy: 0.8150396, val_binary_accuracy_right: 0.8145119, val_binary_accuracy_left: 0.8155673
+[2025-02-17 04:03:58,351][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-009-0.915421.pth'
+[2025-02-17 04:13:16,953][INFO]: train - epoch: 10, lr: 0.00010595, train_loss: 0.07264129
+[2025-02-17 04:18:06,862][INFO]: val - epoch: 10, val_loss: 0.1710192, val_average_precision: 0.9086037, val_average_precision_right: 0.9155692, val_average_precision_left: 0.9016382, val_binary_accuracy: 0.7993404, val_binary_accuracy_right: 0.8023747, val_binary_accuracy_left: 0.7963061
+[2025-02-17 04:18:07,508][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-010-0.908604.pth'
+[2025-02-17 04:27:24,413][INFO]: train - epoch: 11, lr: 9.8695e-05, train_loss: 0.07110185
+[2025-02-17 04:32:14,850][INFO]: val - epoch: 11, val_loss: 0.1882262, val_average_precision: 0.9089396, val_average_precision_right: 0.9179336, val_average_precision_left: 0.8999455, val_binary_accuracy: 0.8056728, val_binary_accuracy_right: 0.8060686, val_binary_accuracy_left: 0.805277
+[2025-02-17 04:32:15,506][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-011-0.908940.pth'
+[2025-02-17 04:41:32,909][INFO]: train - epoch: 12, lr: 9.1187e-05, train_loss: 0.06843701
+[2025-02-17 04:46:23,548][INFO]: val - epoch: 12, val_loss: 0.1467824, val_average_precision: 0.9220655, val_average_precision_right: 0.9241645, val_average_precision_left: 0.9199665, val_binary_accuracy: 0.8208443, val_binary_accuracy_right: 0.8195251, val_binary_accuracy_left: 0.8221636
+[2025-02-17 04:46:24,547][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-012-0.922065.pth'
+[2025-02-17 04:55:42,577][INFO]: train - epoch: 13, lr: 8.3511e-05, train_loss: 0.06481826
+[2025-02-17 05:00:33,520][INFO]: val - epoch: 13, val_loss: 0.1372254, val_average_precision: 0.9267376, val_average_precision_right: 0.930483, val_average_precision_left: 0.9229922, val_binary_accuracy: 0.8245383, val_binary_accuracy_right: 0.8248021, val_binary_accuracy_left: 0.8242744
+[2025-02-17 05:00:34,166][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-013-0.926738.pth'
+[2025-02-17 05:09:52,893][INFO]: train - epoch: 14, lr: 7.575e-05, train_loss: 0.06484137
+[2025-02-17 05:14:43,958][INFO]: val - epoch: 14, val_loss: 0.1402457, val_average_precision: 0.9247925, val_average_precision_right: 0.9294471, val_average_precision_left: 0.920138, val_binary_accuracy: 0.8251979, val_binary_accuracy_right: 0.8255937, val_binary_accuracy_left: 0.8248021
+[2025-02-17 05:14:44,613][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-014-0.924793.pth'
+[2025-02-17 05:24:03,321][INFO]: train - epoch: 15, lr: 6.7989e-05, train_loss: 0.06249515
+[2025-02-17 05:28:53,302][INFO]: val - epoch: 15, val_loss: 0.1429079, val_average_precision: 0.9225087, val_average_precision_right: 0.9290783, val_average_precision_left: 0.9159391, val_binary_accuracy: 0.8217678, val_binary_accuracy_right: 0.8237467, val_binary_accuracy_left: 0.8197889
+[2025-02-17 05:28:53,954][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-015-0.922509.pth'
+[2025-02-17 05:38:12,103][INFO]: train - epoch: 16, lr: 6.0313e-05, train_loss: 0.06046574
+[2025-02-17 05:43:03,502][INFO]: val - epoch: 16, val_loss: 0.1441224, val_average_precision: 0.9224374, val_average_precision_right: 0.923543, val_average_precision_left: 0.9213318, val_binary_accuracy: 0.817942, val_binary_accuracy_right: 0.8171504, val_binary_accuracy_left: 0.8187335
+[2025-02-17 05:43:04,161][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-016-0.922437.pth'
+[2025-02-17 05:52:23,515][INFO]: train - epoch: 17, lr: 5.2805e-05, train_loss: 0.06121626
+[2025-02-17 05:57:14,047][INFO]: val - epoch: 17, val_loss: 0.1540285, val_average_precision: 0.9179064, val_average_precision_right: 0.9233701, val_average_precision_left: 0.9124428, val_binary_accuracy: 0.8159631, val_binary_accuracy_right: 0.8139842, val_binary_accuracy_left: 0.817942
+[2025-02-17 05:57:15,468][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-017-0.917906.pth'
+[2025-02-17 06:06:34,591][INFO]: train - epoch: 18, lr: 4.555e-05, train_loss: 0.05984231
+[2025-02-17 06:11:25,210][INFO]: val - epoch: 18, val_loss: 0.1779786, val_average_precision: 0.9118669, val_average_precision_right: 0.9158442, val_average_precision_left: 0.9078897, val_binary_accuracy: 0.8097625, val_binary_accuracy_right: 0.8050132, val_binary_accuracy_left: 0.8145119
+[2025-02-17 06:11:25,867][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-018-0.911867.pth'
+[2025-02-17 06:20:45,135][INFO]: train - epoch: 19, lr: 3.8625e-05, train_loss: 0.0569576
+[2025-02-17 06:25:35,701][INFO]: val - epoch: 19, val_loss: 0.1522985, val_average_precision: 0.9213955, val_average_precision_right: 0.9245361, val_average_precision_left: 0.918255, val_binary_accuracy: 0.8203166, val_binary_accuracy_right: 0.8221636, val_binary_accuracy_left: 0.8184697
+[2025-02-17 06:25:36,361][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-019-0.921396.pth'
+[2025-02-17 06:34:55,851][INFO]: train - epoch: 20, lr: 3.2107e-05, train_loss: 0.0495601
+[2025-02-17 06:39:46,521][INFO]: val - epoch: 20, val_loss: 0.1826128, val_average_precision: 0.9179525, val_average_precision_right: 0.9198662, val_average_precision_left: 0.9160389, val_binary_accuracy: 0.8150396, val_binary_accuracy_right: 0.816095, val_binary_accuracy_left: 0.8139842
+[2025-02-17 06:39:47,197][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-020-0.917953.pth'
+[2025-02-17 06:49:06,371][INFO]: train - epoch: 21, lr: 2.6067e-05, train_loss: 0.05312535
+[2025-02-17 06:53:57,583][INFO]: val - epoch: 21, val_loss: 0.1994624, val_average_precision: 0.9067034, val_average_precision_right: 0.9098558, val_average_precision_left: 0.9035511, val_binary_accuracy: 0.8055409, val_binary_accuracy_right: 0.8015831, val_binary_accuracy_left: 0.8094987
+[2025-02-17 06:53:58,243][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-021-0.906703.pth'
+[2025-02-17 07:03:19,046][INFO]: train - epoch: 22, lr: 2.0571e-05, train_loss: 0.04901077
+[2025-02-17 07:08:09,107][INFO]: val - epoch: 22, val_loss: 0.1751466, val_average_precision: 0.9175045, val_average_precision_right: 0.9187649, val_average_precision_left: 0.9162441, val_binary_accuracy: 0.8141161, val_binary_accuracy_right: 0.8094987, val_binary_accuracy_left: 0.8187335
+[2025-02-17 07:08:09,770][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-022-0.917504.pth'
+[2025-02-17 07:17:29,572][INFO]: train - epoch: 23, lr: 1.568e-05, train_loss: 0.05072056
+[2025-02-17 07:22:19,868][INFO]: val - epoch: 23, val_loss: 0.1641564, val_average_precision: 0.921845, val_average_precision_right: 0.9224532, val_average_precision_left: 0.9212368, val_binary_accuracy: 0.8187335, val_binary_accuracy_right: 0.8129288, val_binary_accuracy_left: 0.8245383
+[2025-02-17 07:22:20,537][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-023-0.921845.pth'
+[2025-02-17 07:31:39,308][INFO]: train - epoch: 24, lr: 1.1448e-05, train_loss: 0.04953776
+[2025-02-17 07:36:29,876][INFO]: val - epoch: 24, val_loss: 0.1746899, val_average_precision: 0.92199, val_average_precision_right: 0.9239829, val_average_precision_left: 0.9199971, val_binary_accuracy: 0.817942, val_binary_accuracy_right: 0.8150396, val_binary_accuracy_left: 0.8208443
+[2025-02-17 07:36:30,529][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-024-0.921990.pth'
+[2025-02-17 07:45:48,697][INFO]: train - epoch: 25, lr: 7.9192e-06, train_loss: 0.0494747
+[2025-02-17 07:50:40,933][INFO]: val - epoch: 25, val_loss: 0.1744409, val_average_precision: 0.9218147, val_average_precision_right: 0.925463, val_average_precision_left: 0.9181665, val_binary_accuracy: 0.8184697, val_binary_accuracy_right: 0.8174142, val_binary_accuracy_left: 0.8195251
+[2025-02-17 07:50:41,597][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-025-0.921815.pth'
+[2025-02-17 08:00:00,440][INFO]: train - epoch: 26, lr: 5.1341e-06, train_loss: 0.04822735
+[2025-02-17 08:04:52,022][INFO]: val - epoch: 26, val_loss: 0.1665466, val_average_precision: 0.9222849, val_average_precision_right: 0.9255206, val_average_precision_left: 0.9190491, val_binary_accuracy: 0.8172823, val_binary_accuracy_right: 0.8134565, val_binary_accuracy_left: 0.8211082
+[2025-02-17 08:04:52,689][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-026-0.922285.pth'
+[2025-02-17 08:14:10,910][INFO]: train - epoch: 27, lr: 3.1225e-06, train_loss: 0.04775484
+[2025-02-17 08:19:01,027][INFO]: val - epoch: 27, val_loss: 0.170976, val_average_precision: 0.9214444, val_average_precision_right: 0.9229902, val_average_precision_left: 0.9198985, val_binary_accuracy: 0.8170185, val_binary_accuracy_right: 0.8150396, val_binary_accuracy_left: 0.8189974
+[2025-02-17 08:19:01,680][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-027-0.921444.pth'
+[2025-02-17 08:28:20,862][INFO]: train - epoch: 28, lr: 1.9067e-06, train_loss: 0.04811166
+[2025-02-17 08:33:12,718][INFO]: val - epoch: 28, val_loss: 0.1695437, val_average_precision: 0.9216009, val_average_precision_right: 0.923727, val_average_precision_left: 0.9194749, val_binary_accuracy: 0.817942, val_binary_accuracy_right: 0.8150396, val_binary_accuracy_left: 0.8208443
+[2025-02-17 08:33:13,370][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-028-0.921601.pth'
+[2025-02-17 08:42:32,860][INFO]: train - epoch: 29, lr: 1.5e-06, train_loss: 0.04703121
+[2025-02-17 08:47:23,895][INFO]: val - epoch: 29, val_loss: 0.1667552, val_average_precision: 0.9223283, val_average_precision_right: 0.9248851, val_average_precision_left: 0.9197715, val_binary_accuracy: 0.8203166, val_binary_accuracy_right: 0.817942, val_binary_accuracy_left: 0.8226913
+[2025-02-17 08:47:24,583][INFO]: Model saved to '/home/ilabnas3/tanaka/soccer_system/ball_action_spotting/data/ball_action/experiments/ball_tuning_team/fold_team_train/model-029-0.922328.pth'

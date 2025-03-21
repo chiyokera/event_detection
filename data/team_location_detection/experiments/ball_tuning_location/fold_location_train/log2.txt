@@ -1,0 +1,7 @@
+[2025-03-21 14:30:43,744][INFO]: train - epoch: 0, lr: 2.1429e-05, train_loss: 0.07378024
+[2025-03-21 14:37:19,034][INFO]: train - epoch: 1, lr: 4.2857e-05, train_loss: 0.03179032
+[2025-03-21 14:43:54,172][INFO]: train - epoch: 2, lr: 6.4286e-05, train_loss: 0.02649971
+[2025-03-21 14:50:28,987][INFO]: train - epoch: 3, lr: 8.5714e-05, train_loss: 0.02420216
+[2025-03-21 14:57:04,782][INFO]: train - epoch: 4, lr: 0.00010714, train_loss: 0.02316868
+[2025-03-21 15:03:39,526][INFO]: train - epoch: 5, lr: 0.00012857, train_loss: 0.02176921
+[2025-03-21 15:10:14,997][INFO]: train - epoch: 6, lr: 0.00015, train_loss: 0.02172629
