@@ -1,0 +1,3 @@
+from team_location_detection.frame_fetchers.abstract import AbstractFrameFetcher
+from team_location_detection.frame_fetchers.nvdec import NvDecFrameFetcher
+from team_location_detection.frame_fetchers.opencv import OpencvFrameFetcher
