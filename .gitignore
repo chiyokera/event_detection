@@ -38,23 +38,23 @@ data/team_location_detection/experiments/*
 !data/team_location_detection/experiments/ball_finetune_long_004/
 data/team_location_detection/experiments/ball_finetune_long_004/*
 !data/team_location_detection/experiments/ball_finetune_long_004/fold_5/
-data/team_location_detection/experiments/ball_finetune_long_004/fold_5/model-006-0.901643.pth
+data/team_location_detection/experiments/ball_finetune_long_004/fold_5/*.pth
 !data/team_location_detection/experiments/ball_tuning_location/
 data/team_location_detection/experiments/ball_tuning_location/*
 !data/team_location_detection/experiments/ball_tuning_location/fold_location_train/
-data/team_location_detection/experiments/ball_tuning_location/fold_location_train/model-027-0.821834.pth
+data/team_location_detection/experiments/ball_tuning_location/fold_location_train/*.pth
 !data/team_location_detection/experiments/ball_tuning_location_easy/
 data/team_location_detection/experiments/ball_tuning_location_easy/*
 !data/team_location_detection/experiments/ball_tuning_location_easy/fold_location_easy_train/
-data/team_location_detection/experiments/ball_tuning_location_easy/fold_location_easy_train/model-013-0.907175.pth
+data/team_location_detection/experiments/ball_tuning_location_easy/fold_location_easy_train/*.pth
 !data/team_location_detection/experiments/ball_tuning_location_hard/
 data/team_location_detection/experiments/ball_tuning_location_hard/*
 !data/team_location_detection/experiments/ball_tuning_location_hard/fold_location_hard_train/
-data/team_location_detection/experiments/ball_tuning_location_hard/fold_location_hard_train/model-009-0.873259.pth
+data/team_location_detection/experiments/ball_tuning_location_hard/fold_location_hard_train/*.pth
 !data/team_location_detection/experiments/ball_tuning_team/
 data/team_location_detection/experiments/ball_tuning_team/*
 !data/team_location_detection/experiments/ball_tuning_team/fold_team_train/
-data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-013-0.926738.pth
+data/team_location_detection/experiments/ball_tuning_team/fold_team_train/*.pth
 
 data/team_location_detection/soccernet/*
 

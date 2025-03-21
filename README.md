@@ -1,6 +1,6 @@
 # Ball-Action Event Detection Modules
 
-This repository let you try making event detection and making commentator-like text of your sample soccer video whatever. You don't need to download $Soccer Net$ Video Dataset if you are not intend to train your own models.
+This repository let you try **Event Detection** and making commentator-like text corresponding to your sample soccer video. You don't need to download **Soccer Net** Video Dataset if you are not intend to train your own models.
 
 ## Flow for Applying Event Detection System for Your Video
 
@@ -17,7 +17,14 @@ And note that you need following libraries to use this system for Team or Locati
 So, please make new python env in your anaconda using below command
 
 ```
-$ conda activate 
+$ conda activate event_detection
+$ pip install -r requirements.txt
+```
+
+or
+
+```
+$ python -m venv event_detection
 $ pip install -r requirements.txt
 ```
 
