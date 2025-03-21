@@ -43,10 +43,10 @@ data/team_location_detection/soccernet/*
 data/tdeed/*
 !data/tdeed/checkpoints/
 data/tdeed/checkpoints/*
+!data/tdeed/checkpoints/action_class.txt
+!data/tdeed/checkpoints/ballaction_class.txt
 !data/tdeed/checkpoints/soccernetball/
 data/tdeed/checkpoints/soccernetball/*
-!data/tdeed/checkpoints/soccernetball/action_class.txt
-!data/tdeed/checkpoints/soccernetball/ballaction_class.txt
 !data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/
 data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/*
 !data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/.gitkeep
