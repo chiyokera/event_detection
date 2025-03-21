@@ -39,6 +39,12 @@ data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-
 
 data/team_location_detection/soccernet/*
 
+!data/tdeed/
+data/tdeed/*
+!data/tdeed/checkpoints/
+data/tdeed/checkpoints/*
+!data/tdeed/checkpoints/soccernetball/
+data/tdeed/checkpoints/soccernetball/*
 !data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/
 data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/*
 !data/tdeed/checkpoints/soccernetball/SoccerNetBall_challenge2/.gitkeep
