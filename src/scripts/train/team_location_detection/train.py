@@ -106,7 +106,7 @@ def train_ball_action(
         load_weights_from_pretrain(model.nn_module, pretrain_model.nn_module)
         del pretrain_model
 
-    augmentations = get_train_augmentations(config["image_size"])
+    augmentations = get_train_augmentations(config["image_size"], target)
     model.augmentations = augmentations
 
     # MixUpとは、学習の画像データを混ぜ合わせることで、モデルの汎化性能を向上させる手法
