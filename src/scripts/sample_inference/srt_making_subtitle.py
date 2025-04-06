@@ -22,7 +22,13 @@ def parse_args():
         "--task",
         type=str,
         help="result path",
+        required=True,
         choices=["action", "team", "location", "all"],
+    )
+    parser.add_argument(
+        "--name",
+        action="store_true",
+        help="use name",
     )
     return parser.parse_args()
 
@@ -111,7 +117,13 @@ def making_event_text(
     previous_team_name,
     next_team=None,
     next_team_name=None,
+    player_name=None,
 ):
+    if player_name is not None:
+        player = player_name
+    else:
+        player = "Player"
+
     if action == "GOAL":
         return "GOAL!!"
     if location == "OUT":
@@ -119,62 +131,62 @@ def making_event_text(
 
     if action == "PLAYER SUCCESSFUL TACKLE":
         if next_team == team:
-            return f"Player({team_name}) tackles {next_team_name} at {location} and gets the ball"
+            return f"{player}({team_name}) tackles {next_team_name} at {location} and gets the ball"
         else:
-            return f"Player({team_name}) tackles {previous_team_name} at {location}, but can't get the ball"
+            return f"{player}({team_name}) tackles {previous_team_name} at {location}, but can't get the ball"
 
     elif action == "BALL PLAYER BLOCK":
         if next_team == team:
             return (
-                f"Player({team_name}) blocks the ball at {location} and gets the ball"
+                f"{player}({team_name}) blocks the ball at {location} and gets the ball"
             )
         else:
-            return f"Player({team_name}) blocks the ball at {location}, but can't get the ball"
+            return f"{player}({team_name}) blocks the ball at {location}, but can't get the ball"
 
     if team != previous_team:
         if action == "DRIVE":
-            return f"Player({team_name}) gets the opponent ball at {location}"
+            return f"{player}({team_name}) gets the opponent ball at {location}"
         elif action == "PASS":
-            return f"Player({team_name}) gets the ball and passes from {location}"
+            return f"{player}({team_name}) gets the ball and passes from {location}"
         elif action == "CROSS":
-            return f"Player({team_name}) gets the ball and crosses from {location}"
+            return f"{player}({team_name}) gets the ball and crosses from {location}"
         elif action == "SHOT":
-            return f"Player({team_name}) gets the ball and shots from {location}"
+            return f"{player}({team_name}) gets the ball and shots from {location}"
         elif action == "HIGH PASS":
-            return f"Player({team_name}) gets the ball and tries high passes from {location}"
+            return f"{player}({team_name}) gets the ball and tries high passes from {location}"
         elif action == "FREE KICK":
-            return f"Player({team_name}) gets the ball and takes a free kick from {location}"
+            return f"{player}({team_name}) gets the ball and takes a free kick from {location}"
         elif action == "THROW IN":
-            return f"Player({team_name}) takes a throw in from {location}"
+            return f"{player}({team_name}) takes a throw in from {location}"
         elif action == "HEADER":
-            return f"Player({team_name}) heads the ball at {location}"
+            return f"{player}({team_name}) heads the ball at {location}"
         else:
             return str(action)
     else:
         if action == "DRIVE":
-            return f"Player({team_name}) receives the ball at {location}"
+            return f"{player}({team_name}) receives the ball at {location}"
         elif action == "PASS":
             if previous_team == team and previous_action == "PASS":
-                return f"Player({team_name}) directly passes from {location}"
+                return f"{player}({team_name}) directly passes from {location}"
             else:
-                return f"Player({team_name}) passes from {location}"
+                return f"{player}({team_name}) passes from {location}"
         elif action == "CROSS":
-            return f"Player({team_name}) crosses from {location}"
+            return f"{player}({team_name}) crosses from {location}"
         elif action == "SHOT":
-            return f"Player({team_name}) shots from {location}"
+            return f"{player}({team_name}) shots from {location}"
         elif action == "HIGH PASS":
-            return f"Player({team_name}) tries high passes from {location}"
+            return f"{player}({team_name}) tries high passes from {location}"
         elif action == "FREE KICK":
-            return f"Player({team_name}) takes a free kick from {location}"
+            return f"{player}({team_name}) takes a free kick from {location}"
         elif action == "THROW IN":
-            return f"Player({team_name}) takes a throw in from {location}"
+            return f"{player}({team_name}) takes a throw in from {location}"
         elif action == "HEADER":
-            return f"Player({team_name}) heads the ball at {location}"
+            return f"{player}({team_name}) heads the ball at {location}"
         else:
             return str(action)
 
 
-def making_srt(task):
+def making_srt(task, name: bool):
     with open(MATCH_INFO_DIR, "r") as f:
         video_dicts = json.load(f)
 
@@ -184,19 +196,33 @@ def making_srt(task):
         result_path = os.path.join(
             RESLUT_DIR, video_name, "results_spotting_my_filtered_integrated.json"
         )
+        if name:
+            result_path = os.path.join(
+                RESLUT_DIR,
+                video_name,
+                "results_spotting_my_filtered_integrated_name.json",
+            )
         with open(result_path, "r") as f:
             results = json.load(f)
             results = results["predictions"]
 
         srt_dir = os.path.join(RESLUT_DIR, video_name, "srt")
+        if os.path.exists(srt_dir):
+            # すでにsrt_dirが存在する場合は、空にする
+            for filename in os.listdir(srt_dir):
+                file_path = os.path.join(srt_dir, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+
         os.makedirs(srt_dir, exist_ok=True)
         output_path = os.path.join(srt_dir, "event_text.srt")
         if task in ["action", "team", "location"]:
             output_path = os.path.join(srt_dir, f"event_text_{task}.srt")
-
-        if os.path.exists(output_path):
-            print(f"{output_path} already exists.")
-            continue
+        if name:
+            output_path = os.path.join(srt_dir, f"event_text_{task}_name.srt")
+        # if os.path.exists(output_path):
+        #     print(f"{output_path} already exists.")
+        #     continue
 
         with open(output_path, "w") as f:
             for i, result in enumerate(results):
@@ -228,6 +254,10 @@ def making_srt(task):
                     next_team = results[i + 1]["team_own_side"]
                     next_team_name = results[i + 1]["team"]
 
+                player_name = None
+                if name:
+                    player_name = result["name"]
+
                 event_text = making_event_text(
                     action,
                     previous_action,
@@ -238,6 +268,7 @@ def making_srt(task):
                     previous_team_name,
                     next_team,
                     next_team_name,
+                    player_name,
                 )
 
                 f.write(f"{t}\n")
@@ -434,8 +465,13 @@ def making_srt(task):
         if task == "all":
             client = OpenAI()
             en_inst = "You are a passionate soccer commentator. Input is str_file and you change only text part. Change the text more contextually connected passionate but very very short sentences, using many conjunctions. It's Ok to omit location infomation like right bottom bidfied to make text shorter in some text. For the first text, put team name but it's OK not to include this team name if it is used many times in a row. But don't forget to include the word 'player'. Of course, use conjunctions as much as possible for each passionate text and don't forget to include time part."
+            if name:
+                en_inst = "You are a passionate soccer commentator. Input is str_file and you change only text part. Change the text more contextually connected passionate but very very short sentences, using many conjunctions. It's Ok to often omit location or team infomation like right bottom bidfied to make text shorter. For the first text, put player name but it's OK not to include this team name if it is used many times in a row. Of course, use conjunctions as much as possible for each passionate text and don't forget to include time part."
             save_path = os.path.join(srt_dir, "commentary.srt")
             jsonl_save_path = os.path.join(srt_dir, "commentary_en.jsonl")
+            if name:
+                save_path = os.path.join(srt_dir, "commentary_name.srt")
+                jsonl_save_path = os.path.join(srt_dir, "commentary_name_en.jsonl")
 
             with open(output_path, "r") as f:
                 srt_file = f.read()
@@ -469,6 +505,8 @@ def making_srt(task):
                     json_dict["action"] = results[k]["action"]
                     json_dict["location"] = results[k]["location"]
                     json_dict["team"] = results[k]["team"]
+                    if name:
+                        json_dict["name"] = results[k]["name"]
 
                     with open(jsonl_save_path, "a") as f:
                         json.dump(json_dict, f)
@@ -483,4 +521,4 @@ def making_srt(task):
 
 if __name__ == "__main__":
     args = parse_args()
-    making_srt(args.task)
+    making_srt(args.task, args.name)

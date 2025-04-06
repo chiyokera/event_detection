@@ -27,9 +27,9 @@ def set_random_seed(index: int):
     np.random.seed(seed % (2**32 - 1))
 
 
-def get_best_model_path(dir_path, return_score=False, more_better=True):
-    dir_path = Path(dir_path)
+def get_best_model_path(dir_path: str, return_score=False, more_better=True):
     model_scores = []
+    dir_path = Path(dir_path)
     for model_path in dir_path.glob("*.pth"):
         score = re.search(r"-(\d+(?:\.\d+)?).pth", str(model_path))
         if score is not None:

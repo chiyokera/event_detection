@@ -1,6 +1,6 @@
 # Ball-Action Event Detection Modules
 
-This repository let you try **Event Detection** and making commentator-like text corresponding to your sample soccer video. You don't need to download **Soccer Net** Video Dataset if you are not intend to train your own models.
+This repository let you try **Event Detection** and making commentator-like text corresponding to your sample soccer video. If you wanna try to train your own models, You also need to download **Soccer Net** Video Dataset.
 
 ## Flow for Applying Event Detection System for Your Video
 
