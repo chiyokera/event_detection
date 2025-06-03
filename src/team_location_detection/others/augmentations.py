@@ -8,6 +8,7 @@ def get_train_augmentations(size: tuple[int, int], target="label") -> nn.Module:
     ratio = size[0] / size[1]
 
     if target == "location_easy" or target == "location" or target == "team":
+        print(f"augumentations for {target}")
         transforms = nn.Sequential(
             RandomCameraMove((-2.5, 2.5), (0.1, 0.05), (0.95, 1.05), p=0.2),
             augm.RandomRotation(degrees=(-2.5, 2.5), p=0.3),

@@ -105,7 +105,6 @@ def train_ball_action(
             print(f"Pretrain dir: {pretrain_dir}")
         else:
             print(f"Pretrain dir {pretrain_dir} not exists")
-
     elif config["pretrain_action_experiment"]:
         pretrain_dir = os.path.join(
             constants.experiments_dir, config["pretrain_action_experiment"]

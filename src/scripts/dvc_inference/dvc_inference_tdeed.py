@@ -31,6 +31,7 @@ from tdeed.util.eval import (
 )
 from tdeed.util.io import load_json, load_text, store_json, store_json_snb
 from scripts.train.tdeed.train_tdeed import update_args
+from my_filter2 import my_filter_nms2
 
 # Constants
 STRIDE = 1
@@ -106,97 +107,103 @@ def action_spotting(args):
     model._model.update_pred_head(n_classes)
     model._num_classes = np.array(n_classes).sum()
 
-    print("START INFERENCE")
-    model.load(
-        torch.load(
-            os.path.join(
-                TDEED_DATA_DIR,
-                "checkpoints",
-                "soccernetball",
-                args.model,
-                "checkpoint_best.pt",
-            )
+    save_path = os.path.join(save_dir, "results.json")
+    print("Save path: ", save_path)
+    if os.path.exists(save_path):
+        print("Results already exist, skipping inference")
+        with open(save_path, "r") as f:
+            pred_events = json.load(f)
+        label_file = os.path.join(
+            args.data_dir, "results", "video_info", "video_info.json"
         )
-    )
-
-    frame_dir = Path(args.frame_dir)
-    label_file = os.path.join(args.data_dir, "results", "video_info", "video_info.json")
-    stride = STRIDE
-    if args.dataset == "soccernet":
-        stride = STRIDE_SN
-    if args.dataset == "soccernetball":
-        stride = STRIDE_SNB
-    video_info = load_json(label_file)
-    if video_info == []:
-        print("No videos found in the dataset")
-        return
-    num_frames = video_info[0]["num_frames"]
-    if os.path.exists(frame_dir):
-        print(f"Frame directory: {frame_dir}")
-        split_data = InferenceActionSpotVideoDataset(
-            classes=classes,
-            label_file=label_file,
-            frame_dir=frame_dir,
-            modality=args.modality,
-            clip_len=args.clip_len,
-            overlap_len=(
-                args.clip_len // 4 * 3
-                if args.dataset != "soccernet"
-                else args.clip_len // 2
-            ),  # 3/4 overlap for video dataset, 1/2 overlap for soccernet
-            stride=stride,
-            dataset="soccernetball",
+        video_info = load_json(label_file)
+        num_frames = video_info[0]["num_frames"]
+        pred_events_high_recall_store = pred_events
+        store_json_snb(save_dir, pred_events_high_recall_store, stride=STRIDE_SNB)
+        my_filter_nms2(
+            save_dir,
+            pred_events_high_recall_store,
+            stride=STRIDE_SNB,
+            num_frames=num_frames,
         )
 
-        # save_pred = os.path.join(
-        #     "data",
-        #     args.dataset,
-        #     "sample-results",
-        #     "preds.json",
-        # )
-        pred_dict = {}
-        for (
-            video,
-            video_len,
-            _,
-        ) in (
-            split_data.videos
-        ):  # video = video name, video_len = number of frames in video
-            pred_dict[video] = (
-                np.zeros((video_len, len(classes) + 1), np.float32),
-                np.zeros(video_len, np.int32),
+    else:
+        print("START INFERENCE")
+        model.load(
+            torch.load(
+                os.path.join(
+                    TDEED_DATA_DIR,
+                    "checkpoints",
+                    "soccernetball",
+                    args.model,
+                    "checkpoint_best.pt",
+                )
+            )
+        )
+
+        frame_dir = Path(args.frame_dir)
+        label_file = args.video_info_path
+        stride = STRIDE
+        if args.dataset == "soccernet":
+            stride = STRIDE_SN
+        if args.dataset == "soccernetball":
+            stride = STRIDE_SNB
+        video_info = load_json(label_file)
+        if video_info == []:
+            print("No videos found in the dataset")
+            return
+        num_frames = video_info[0]["num_frames"]
+        if os.path.exists(frame_dir):
+            print(f"Frame directory: {frame_dir}")
+            split_data = InferenceActionSpotVideoDataset(
+                classes=classes,
+                label_file=label_file,
+                frame_dir=frame_dir,
+                modality=args.modality,
+                clip_len=args.clip_len,
+                overlap_len=(
+                    args.clip_len // 4 * 3
+                    if args.dataset != "soccernet"
+                    else args.clip_len // 2
+                ),  # 3/4 overlap for video dataset, 1/2 overlap for soccernet
+                stride=stride,
+                dataset="soccernetball",
             )
 
-        # Do not up the batch size if the dataset augments
-        batch_size = 1
-        h = 0
-        for clip in tqdm(
-            DataLoader(
-                split_data,
-                num_workers=1,
-                pin_memory=True,
-                batch_size=batch_size,
-            )
-        ):
-            # Batched by dataset
-            scores, support = pred_dict[clip["video"][0]]
-            start = clip["start"][0].item()
-            _, pred_scores = model.predict(clip["frame"])
-            if start < 0:
-                pred_scores = pred_scores[:, -start:, :]
-                start = 0
-            end = start + pred_scores.shape[1]
-            if end >= scores.shape[0]:
-                end = scores.shape[0]
-                pred_scores = pred_scores[:, : end - start, :]
+            # save_pred = os.path.join(
+            #     "data",
+            #     args.dataset,
+            #     "sample-results",
+            #     "preds.json",
+            # )
+            pred_dict = {}
+            for (
+                video,
+                video_len,
+                _,
+            ) in (
+                split_data.videos
+            ):  # video = video name, video_len = number of frames in video
+                pred_dict[video] = (
+                    np.zeros((video_len, len(classes) + 1), np.float32),
+                    np.zeros(video_len, np.int32),
+                )
 
-            scores[start:end, :] += np.sum(pred_scores, axis=0)
-            support[start:end] += pred_scores.shape[0]
-
-            # Additional view with horizontal flip
-            for i in range(1):
+            # Do not up the batch size if the dataset augments
+            batch_size = 1
+            h = 0
+            for clip in tqdm(
+                DataLoader(
+                    split_data,
+                    num_workers=1,
+                    pin_memory=True,
+                    batch_size=batch_size,
+                )
+            ):
+                # Batched by dataset
+                scores, support = pred_dict[clip["video"][0]]
                 start = clip["start"][0].item()
-                _, pred_scores = model.predict(clip["frame"], augment_inference=True)
+                _, pred_scores = model.predict(clip["frame"])
                 if start < 0:
                     pred_scores = pred_scores[:, -start:, :]
                     start = 0
@@ -208,32 +215,42 @@ def action_spotting(args):
                 scores[start:end, :] += np.sum(pred_scores, axis=0)
                 support[start:end] += pred_scores.shape[0]
 
-        pred_events, pred_events_high_recall, pred_scores = (
-            process_frame_predictions_challenge(
-                split_data, classes, pred_dict, high_recall_score_threshold=0.01
+                # Additional view with horizontal flip
+                for i in range(1):
+                    start = clip["start"][0].item()
+                    _, pred_scores = model.predict(
+                        clip["frame"], augment_inference=True
+                    )
+                    if start < 0:
+                        pred_scores = pred_scores[:, -start:, :]
+                        start = 0
+                    end = start + pred_scores.shape[1]
+                    if end >= scores.shape[0]:
+                        end = scores.shape[0]
+                        pred_scores = pred_scores[:, : end - start, :]
+
+                    scores[start:end, :] += np.sum(pred_scores, axis=0)
+                    support[start:end] += pred_scores.shape[0]
+
+            pred_events, pred_events_high_recall, pred_scores = (
+                process_frame_predictions_challenge(
+                    split_data, classes, pred_dict, high_recall_score_threshold=0.01
+                )
             )
-        )
-        # print(
-        #     f"pred_events_high_recall[video]: {pred_events_high_recall[0]['video']},{pred_events_high_recall[1]['video']}"
-        # )
-        windows = WINDOWS_SNB
-        pred_events_high_recall_store = non_maximum_supression(
-            pred_events_high_recall, window=windows[0], threshold=0.10
-        )
-        # print(
-        #     f"pred_events_high_recall_store[video]: {pred_events_high_recall_store[0]['video']},{pred_events_high_recall_store[1]['video']}"
-        # )
-        save_dir = Path(args.save_dir)
-        if not os.path.exists(save_dir):
-            os.makedirs(save_dir)
-        store_json(save_dir, pred_events_high_recall_store)
+            windows = WINDOWS_SNB
+            pred_events_high_recall_store = non_maximum_supression(
+                pred_events_high_recall, window=windows[0], threshold=0.10
+            )
+            save_dir = Path(args.save_dir)
+            if not os.path.exists(save_dir):
+                os.makedirs(save_dir)
 
-        # if not os.path.exists("/".join(save_pred.split("/")[:-1])):
-        #     os.makedirs("/".join(save_pred.split("/")[:-1]))
-        # store_json(save_pred, pred_events_high_recall_store)
-        store_json_snb(save_dir, pred_events_high_recall_store, stride=stride)
-        my_filter_nms(save_dir, pred_events_high_recall_store, stride, num_frames)
+            store_json(save_dir, pred_events_high_recall_store)
+            store_json_snb(save_dir, pred_events_high_recall_store, stride=stride)
+            my_filter_nms2(save_dir, pred_events_high_recall_store, stride, num_frames)
 
+    end_time = time.time()
+    print("Inference Ball Action Spotting Time: ", end_time - initial_time)
     print("CORRECTLY FINISHED INFERENCE")
 
 
@@ -256,7 +273,7 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                 ):
                     filter_list[j][window].append((i, event))
                     break
-        # filter1(全イベントの内の候補のindexを入れたい)
+        # filter1
         max_idxes = set()
         for window_dict in filter_list:
             for window, events in window_dict.items():
@@ -269,17 +286,23 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
 
                 max_idx = event_score_list.index(max(event_score_list))
                 idx, max_event = events[max_idx]
-                if max_event["score"] >= 0.15:
-                    # print(
-                    #     f"event_frame: {max_event['frame']*stride}, event_label: {max_event['label']}, event_score: {max_event['score']}"
-                    # )
+                if max_event["score"] >= 0.1:
                     if max_event["label"] == "DRIVE":
-                        if max_event["score"] >= 0.21:
+                        if max_event["score"] >= 0.15:
                             max_idxes.add(idx)
                         else:
-                            max_idx = -1
+                            if len(events) > 1:
+                                event_list = list()
+
+                                for _, event in events:
+                                    event_list.append(event["label"])
+                                # list内にDRIVEが2つ以上あれば採用
+                                if event_list.count("DRIVE") >= 2:
+                                    max_idxes.add(idx)
+                            else:
+                                max_idx = -1
                     elif max_event["label"] == "HEADER":
-                        if max_event["score"] >= 0.25:
+                        if max_event["score"] >= 0.2:
                             max_idxes.add(idx)
                         else:
                             max_idx = -1
@@ -287,7 +310,7 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                         if max_event["score"] >= 0.18:
                             max_idxes.add(idx)
                         else:
-                            if len(events) == 1:
+                            if len(events) > 1:
                                 max_idxes.add(idx)
                             else:
                                 max_idx = -1
@@ -304,14 +327,15 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                     elif max_event["label"] == "THROW IN":
                         if max_event["score"] >= 0.61:
                             max_idxes.add(idx)
+
+                    elif max_event["label"] == "OUT":
+                        if max_event["score"] >= 0.2:
+                            max_idxes.add(idx)
+                        else:
+                            max_idx = -1
                     else:
                         max_idxes.add(idx)
-                else:
-                    if max_event["label"] == "OUT":
-                        if max_event["score"] >= 0.1:
-                            max_idxes.add(idx)
-                    else:
-                        max_idx = -1
+
                 for i, (idx, event) in enumerate(events):
                     if i == max_idx:
                         continue
@@ -333,13 +357,13 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                             max_idxes.add(idx)
                     elif event["label"] == "DRIVE":
                         if max_event["label"] == "PASS":
-                            if events[i][1]["score"] >= 0.24:
+                            if events[i][1]["score"] >= 0.21:
                                 max_idxes.add(idx)
                         elif events[i][1]["score"] >= 0.9:
                             max_idxes.add(idx)
 
                     elif event["label"] == "SHOT":
-                        if events[i][1]["score"] >= 0.4:
+                        if events[i][1]["score"] >= 0.3:
                             max_idxes.add(idx)
                     elif event["label"] == "PASS":
                         if max_event["label"] == "DRIVE":
@@ -350,14 +374,9 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                     elif event["label"] == "CROSS":
                         if events[i][1]["score"] >= 0.1:
                             max_idxes.add(idx)
-        # print(
-        #     f"game: {game['video']}, num_events: {len(game['events'])}, num_max_idxes: {len(max_idxes)}"
-        # )
-        # print(max_idxes)
-        # for i, idx in enumerate(sorted(list(max_idxes))):
-        #     print(game["events"][idx]["gameTime"], game["events"][idx]["label"])
+
         # filter2
-        # もしあるイベントの前後1秒以内にイベントがある場合、scoreが高い方を採用,ただし、そのイベントがHEADERかGOALの場合はそのまま採用
+        # OUTの連続を考慮して、OUTのscoreが高いものを採用
         max_idxes2 = set()
         out_idxes = set()
         for i, idx in enumerate(sorted(list(max_idxes))):
@@ -397,15 +416,21 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                     next_event = game["events"][next_idx]
                     next_position = int(next_event["frame"] / FPS_SN * 1000) * stride
                     next_event_label = next_event["label"]
-
-                    if (
-                        event_label == "HEADER"
-                        or event_label == "GOAL"
+                    if event["frame"] == next_event["frame"]:
+                        if event["score"] >= next_event["score"]:
+                            max_idxes2.add(idx)
+                            out_idxes.add(next_idx)
+                            continue
+                        else:
+                            continue
+                    # DRIVEとPASSとHEADERとHIGH PASS以外は連続しない
+                    if not (
+                        event_label == "DRIVE"
+                        or event_label == "PASS"
+                        or event_label == "HEADER"
                         or event_label == "HIGH PASS"
-                        or event_label == "BALL PLAYER BLOCK"
-                        or event_label == "PLAYER SUCCESSFUL TACKLE"
-                        or event_label == "CROSS"
                     ):
+                        # 連続した場合,基本的には高い方を採用
                         if event_label == next_event_label:
                             if event_score >= next_event["score"]:
                                 max_idxes2.add(idx)
@@ -413,136 +438,182 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
                                     continue
                                 else:
                                     out_idxes.add(next_idx)
+                                    continue
                             else:
                                 if event_score >= 0.9:
                                     max_idxes2.add(idx)
-                        else:
-                            max_idxes2.add(idx)
-                            continue
+                                    continue
+
                     if next_position - position <= 1000:
                         if next_position - position <= 500:
-                            if event_score >= next_event["score"]:
-                                if (
-                                    event_label == "PASS"
-                                    and next_event_label == "HIGH PASS"
-                                ) or (
-                                    event_label == "HIGH PASS"
-                                    and next_event_label == "PASS"
-                                ):
-                                    continue
-
-                                max_idxes2.add(idx)
-
-                                if next_event["score"] >= 0.9:
-                                    continue
-                                if (
-                                    next_event_label == "PLAYER SUCCESSFUL TACKLE"
-                                    or next_event_label == "BALL PLAYER BLOCK"
-                                ):
-                                    continue
-
-                                if (
-                                    event_label == "PASS"
-                                    and next_event_label == "CROSS"
-                                ):
-                                    continue
-                                if (
-                                    event_label == "PASS"
-                                    and next_event_label == "DRIVE"
-                                ):
-                                    continue
-                                if (
-                                    event_label == "SHOT"
-                                    and next_event_label == "BALL PLAYER BLOCK"
-                                ):
+                            if next_position - position == 0:
+                                if event_score >= next_event["score"]:
+                                    max_idxes2.add(idx)
                                     continue
                                 else:
-                                    out_idxes.add(next_idx)
-                            else:
+                                    continue
+                            # 500ms以内に連続する可能性が比較的高いものだけ消さない
+                            if (
+                                next_event_label == "PLAYER SUCCESSFUL TACKLE"
+                                or next_event_label == "BALL PLAYER BLOCK"
+                                or next_event_label == "GOAL"
+                            ):
+                                max_idxes2.add(idx)
+                                continue
+
+                            if event_label == "PASS" and (
+                                next_event_label == "CROSS"
+                                or next_event_label == "SHOT"
+                                or next_event_label == "HEADER"
+                            ):
+                                max_idxes2.add(idx)
+                                continue
+                            # PASSとHIGI PASSの連続はHIGH PASSを採用
+                            if (
+                                event_label == "PASS"
+                                and next_event_label == "HIGH PASS"
+                            ):
+                                if event_score >= next_event["score"]:
+                                    max_idxes2.add(idx)
+                                    if next_event["score"] >= 0.2:
+                                        continue
+                                    else:
+                                        out_idxes.add(next_idx)
+                                        continue
+
+                                else:
+                                    if event_score >= 0.2:
+                                        max_idxes2.add(idx)
+                                        continue
+                                    else:
+                                        continue
+
+                            if event_label == "PASS" and next_event_label == "DRIVE":
+                                if event_score >= next_event["score"]:
+                                    max_idxes2.add(idx)
+                                    if next_event["score"] >= 0.25:
+                                        continue
+                                    else:
+                                        out_idxes.add(next_idx)
+                                        continue
+                                else:
+                                    if event_score >= 0.25:
+                                        max_idxes2.add(idx)
+                                        continue
+
+                            if event_label == "DRIVE" and next_event_label == "PASS":
+                                max_idxes2.add(idx)
+                                continue
+                            if event_label == "HEADER" and next_event_label == "HEADER":
+                                max_idxes2.add(idx)
+                                continue
+                            if event_label == "THROW IN" and (
+                                next_event_label == "DRIVE"
+                                or next_event_label == "PASS"
+                            ):
+                                max_idxes2.add(idx)
+                                continue
+
+                            if event_score >= next_event["score"]:
+                                max_idxes2.add(idx)
+                                if next_event["score"] >= 0.9:
+                                    continue
+                                out_idxes.add(next_idx)
+
+                            else:  # next_event["score"] > event_score
                                 if event_score >= 0.9:
                                     max_idxes2.add(idx)
-                                if (
-                                    next_event_label == "GOAL"
-                                    or next_event_label == "HIGH PASS"
-                                    or next_event_label == "BALL PLAYER BLOCK"
-                                    or next_event_label == "PLAYER SUCCESSFUL TACKLE"
-                                ):
-                                    max_idxes2.add(idx)
-                        else:
+
+                        else:  # 500ms以上1000ms未満は連続もありえる
                             if event_score >= next_event["score"]:
                                 max_idxes2.add(idx)
                                 if next_event["score"] >= 0.8:
+                                    continue
+                                elif event_label == "HEADER":
                                     continue
                                 elif (
                                     event_label == "PASS"
                                     and next_event_label == "DRIVE"
                                 ):
-                                    if next_event["score"] >= 0.25:
-                                        continue
+                                    continue
+
                                 elif (
                                     event_label == "DRIVE"
                                     and next_event_label == "PASS"
                                 ):
                                     if next_event["score"] >= 0.21:
                                         continue
+                                    else:
+                                        out_idxes.add(next_idx)
+
                                 elif (
                                     event_label == "PASS" and next_event_label == "PASS"
                                 ):
                                     if next_event["score"] >= 0.22:
                                         continue
+                                    else:
+                                        out_idxes.add(next_idx)
+                                elif event_label == "SHOT" and (
+                                    next_event_label == "HEADER"
+                                    or next_event_label == "BALL PLAYER BLOCK"
+                                    or next_event_label == "OUT"
+                                ):
+                                    if next_event["score"] >= 0.2:
+                                        continue
+                                    else:
+                                        out_idxes.add(next_idx)
                                 else:
                                     out_idxes.add(next_idx)
                             else:
                                 if event_score >= 0.8:
                                     max_idxes2.add(idx)
-                                if (
-                                    event_label == "DRIVE"
-                                    and next_event_label == "SHOT"
+                                    continue
+                                if event_label == "DRIVE" and (
+                                    next_event_label == "SHOT"
+                                    or next_event_label == "CROSS"
+                                    or next_event_label == "PASS"
+                                    or next_event_label == "HEADER"
                                 ):
                                     max_idxes2.add(idx)
-                                if (
-                                    event_label == "DRIVE"
-                                    and next_event_label == "PASS"
+                                    continue
+                                elif event_label == "DRIVE" and (
+                                    next_event_label == "DRIVE"
                                 ):
-                                    max_idxes2.add(idx)
-                                if (
+                                    if event_score >= 0.25:
+                                        max_idxes2.add(idx)
+                                        continue
+
+                                elif (
                                     event_label == "PASS"
                                     and next_event_label == "DRIVE"
                                 ):
                                     max_idxes2.add(idx)
-                    else:
-                        if (
-                            next_position - position <= 1500
-                            and event_label == "DRIVE"
-                            and next_event_label == "DRIVE"
-                        ):
-                            if event_score >= next_event["score"]:
-                                max_idxes2.add(idx)
-                                if next_event["score"] >= 0.9:
                                     continue
-                                else:
-                                    out_idxes.add(next_idx)
-                            else:
-                                if event_score >= 0.9:
+
+                                elif event_label == "GOAL":
                                     max_idxes2.add(idx)
-                        elif (
-                            next_position - position <= 1500
-                            and event_label == "THROW IN"
-                            and next_event_label == "THROW IN"
-                        ):
-                            if event_score >= next_event["score"]:
-                                max_idxes2.add(idx)
-                                if next_event["score"] >= 0.9:
                                     continue
-                                else:
-                                    out_idxes.add(next_idx)
-                            else:
-                                if event_score >= 0.9:
-                                    max_idxes2.add(idx)
-                        else:
+
+                    elif (
+                        next_position - position <= 1500
+                        and event_label == "THROW IN"
+                        and next_event_label == "THROW IN"
+                    ):
+                        if event_score >= next_event["score"]:
                             max_idxes2.add(idx)
+                            if next_event["score"] >= 0.9:
+                                continue
+                            else:
+                                out_idxes.add(next_idx)
+                        else:
+                            if event_score >= 0.9:
+                                max_idxes2.add(idx)
+                    else:
+                        max_idxes2.add(idx)
                 else:
                     max_idxes2.add(idx)
+
+        # Result Making
         for i, idx in enumerate(sorted(list(max_idxes2))):
             event = game["events"][idx]
             eventDict = dict()
@@ -563,7 +634,8 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
         pred_game_dir = os.path.join(pred_dir, game["video"], "action")
         os.makedirs(pred_game_dir, exist_ok=True)
         with open(
-            os.path.join(pred_game_dir, "results_spotting_my_filtered_action.json"), "w"
+            os.path.join(pred_game_dir, "results_spotting_my_filtered_action2.json"),
+            "w",
         ) as fp:
             json.dump(gameDict, fp, indent=4)
 

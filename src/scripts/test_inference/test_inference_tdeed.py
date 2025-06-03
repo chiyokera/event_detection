@@ -30,7 +30,7 @@ from tdeed.util.eval import (
     process_frame_predictions_challenge,
 )
 from tdeed.util.io import load_json, load_text, store_json, store_json_snb
-from scripts.train.tdeed.train_tdeed import update_args
+
 
 # Constants
 STRIDE = 1
@@ -39,6 +39,7 @@ STRIDE_SNB = 2
 TOLERANCES_SNB = [6, 12]
 WINDOWS_SNB = [6, 12]
 FPS_SN = 25
+BAS_DATA_DIR = "../../../data/team_location_detection/soccernet/england_efl/2019-2020"
 TDEED_DATA_DIR = "../../../data/tdeed"
 CONFIG_DIR = "../../../configs"
 
@@ -49,57 +50,61 @@ def get_args():
     parser.add_argument(
         "-ag", "--acc_grad_iter", type=int, default=1, help="Use gradient accumulation"
     )
-    parser.add_argument("--save_dir", type=str, required=True)
     parser.add_argument("--seed", type=int, default=1)
     return parser.parse_args()
 
 
-def action_spotting(args):
+def update_args(args, config):
+    # Update arguments with config file
+    args.frame_dir = "../../../data/team_location_detection/soccernet/england_efl/2019-2020/test_720p_frames"
+    args.store_mode = config["store_mode"]
+    args.batch_size = config["batch_size"]
+    args.clip_len = config["clip_len"]
+    args.crop_dim = config["crop_dim"]
+    args.dataset = config["dataset"]
+    args.radi_displacement = config["radi_displacement"]
+    args.epoch_num_frames = config["epoch_num_frames"]
+    args.feature_arch = config["feature_arch"]
+    args.learning_rate = config["learning_rate"]
+    args.mixup = config["mixup"]
+    args.modality = config["modality"]
+    args.num_classes = config["num_classes"]
+    args.num_epochs = config["num_epochs"]
+    args.warm_up_epochs = config["warm_up_epochs"]
+    args.start_val_epoch = config["start_val_epoch"]
+    args.temporal_arch = config["temporal_arch"]
+    args.n_layers = config["n_layers"]
+    args.sgp_ks = config["sgp_ks"]
+    args.sgp_r = config["sgp_r"]
+    args.only_test = config["only_test"]
+    args.criterion = config["criterion"]
+    args.num_workers = config["num_workers"]
+    if "pretrain" in config:
+        args.pretrain = config["pretrain"]
+    else:
+        args.pretrain = None
+
+    return args
+
+
+def test_action_spotting(args):
     # Set seed
-    initial_time = time.time()
     print("Setting seed to: ", args.seed)
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     random.seed(args.seed)
+
     config_path = os.path.join(CONFIG_DIR, "tdeed", args.model + ".json")
     config = load_json(config_path)
-    frame_dir = args.frame_dir
-    save_dir = args.save_dir
     args = update_args(args, config)
-    args.frame_dir = frame_dir
-    args.save_dir = save_dir
-    pprint(args)
+
     assert args.dataset in ["soccernetball"]  # Only SoccerNet Ball is supported
-
-    # # Variables for SN & SNB label paths if datastes
-    # if (args.dataset == "soccernet") | (args.dataset == "soccernetball"):
-    #     global LABELS_SN_PATH
-    #     global LABELS_SNB_PATH
-    #     LABELS_SN_PATH = load_text(
-    #         os.path.join("data", "soccernet", "labels_path.txt")
-    #     )[0]
-    #     LABELS_SNB_PATH = load_text(
-    #         os.path.join("data", "soccernetball", "labels_path.txt")
-    #     )[0]
-
     assert args.batch_size % args.acc_grad_iter == 0
     if args.crop_dim <= 0:
         args.crop_dim = None
 
-    # # initialize wandb
-    # wandb.login()
-    # wandb.init(
-    #     config=args,
-    #     dir=args.save_dir + "/wandb_logs",
-    #     project="TDEED-ballaction-inference",
-    #     name=args.model + "-" + str(args.seed),
-    # )
-
     # Model
     model = TDEEDModel(args=args)
-
-    # If pretrain -> 2 prediction heads
-    # if args.pretrain != None:
     classes = load_classes(os.path.join(TDEED_DATA_DIR, "ballaction_class.txt"))
     pretrain_classes = load_classes(os.path.join(TDEED_DATA_DIR, "action_class.txt"))
     n_classes = [len(classes) + 1, len(pretrain_classes) + 1]
@@ -120,7 +125,7 @@ def action_spotting(args):
     )
 
     frame_dir = Path(args.frame_dir)
-    label_file = os.path.join(args.data_dir, "results", "video_info", "video_info.json")
+    label_file = os.path.join(BAS_DATA_DIR, "test_video_info.json")
     stride = STRIDE
     if args.dataset == "soccernet":
         stride = STRIDE_SN
@@ -132,7 +137,6 @@ def action_spotting(args):
         return
     num_frames = video_info[0]["num_frames"]
     if os.path.exists(frame_dir):
-        print(f"Frame directory: {frame_dir}")
         split_data = InferenceActionSpotVideoDataset(
             classes=classes,
             label_file=label_file,
@@ -223,7 +227,7 @@ def action_spotting(args):
         # print(
         #     f"pred_events_high_recall_store[video]: {pred_events_high_recall_store[0]['video']},{pred_events_high_recall_store[1]['video']}"
         # )
-        save_dir = Path(args.save_dir)
+        save_dir = Path(BAS_DATA_DIR)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
         store_json(save_dir, pred_events_high_recall_store)
@@ -570,4 +574,4 @@ def my_filter_nms(pred_dir, games, stride, num_frames):
 
 if __name__ == "__main__":
     args = get_args()
-    action_spotting(args)
+    test_action_spotting(args)

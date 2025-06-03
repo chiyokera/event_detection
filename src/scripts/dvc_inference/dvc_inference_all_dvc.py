@@ -7,8 +7,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from inference_extract_frames import inference_extract
-from inference_tdeed import action_spotting
+from dvc_inference_extract_frames import inference_extract
+from dvc_inference_tdeed import action_spotting
 from tqdm import tqdm
 
 sys.path.append(str(Path(__file__).parents[2]))
@@ -34,27 +34,33 @@ def parse_arguments():
     parser.add_argument(
         "-d",
         "--data_dir",
-        default="../../../data/sample",
+        default="../../../data/dvc",
         help="Path to the sample data",
     )
     parser.add_argument(
         "-v",
         "--video_dir",
-        default="../../../data/sample/videos",
+        default="../../../data/dvc/video_clips/england_epl_2015-2016/2015-10-24 - 17-00 West Ham 2 - 1 Chelsea",
         help="Path to the sample videos",
     )
     parser.add_argument(
         "-o",
         "--frame_dir",
-        default="../../../data/sample/frames",
+        default="../../../data/dvc/frames/2015-10-24 - 17-00 West Ham 2 - 1 Chelsea",
         help="Path to write frames. Dry run if None.",
+    )
+    parser.add_argument(
+        "-s",
+        "--save_dir",
+        default="../../../data/dvc/results/2015-10-24 - 17-00 West Ham 2 - 1 Chelsea",
+        help="Path to write results. Dry run if None.",
     )
     parser.add_argument("--sample_fps", type=int, default=25)
     parser.add_argument("--recalc_fps", action="store_true")
     parser.add_argument("-j", "--num_workers", type=int, default=os.cpu_count() // 4)
 
     # For ball-action spotting
-    parser.add_argument("--folds", default="train", type=str, required=True)
+    parser.add_argument("--folds", default="all", type=str, required=True)
     parser.add_argument("--gpu_id", default=0, type=int)
 
     parser.add_argument(
@@ -75,7 +81,7 @@ def parse_arguments():
     return parser.parse_args()
 
 
-def predict_fold(fold, gpu_id: int):
+def predict_fold(video_dir, fold, gpu_id: int, video_info_path=None):
     """
     モデル宣言と動画特定
     """
@@ -90,8 +96,9 @@ def predict_fold(fold, gpu_id: int):
         print(f"Experiment: {experiment}, {target=}")
         # experimentを_で区切って前から2番目以降を取得
         experiment_dir = (
-            constants.experiments_dir / experiment / f"fold_{target}_{fold}"
+            constants.experiments_dir + "/" + experiment + f"/fold_{target}_{fold}"
         )
+        print("Experiment dir:", experiment_dir)
         model_path = get_best_model_path(experiment_dir)
         print("Model path:", model_path)
 
@@ -100,18 +107,16 @@ def predict_fold(fold, gpu_id: int):
             model_path, device=f"cuda:{gpu_id}", tta=TTA
         )
         # データセットの特定
-        video_info_path = os.path.join(
-            DATA_DIR, "results", "video_info", "video_info.json"
-        )
         with open(video_info_path) as file:
             video_infos = json.load(file)
 
         for video_info in video_infos:
             # 各映像ごとに予測
-            video_path = os.path.join(DATA_DIR, "videos", f"{video_info['video']}.mp4")
+            video_path = os.path.join(video_dir, f"{video_info['video']}.mp4")
             prediction_dir = os.path.join(
                 DATA_DIR,
                 "results",
+                GAME_NAME,
                 video_info["video"],
                 experiment.replace("ball_tuning_", ""),
             )
@@ -123,9 +128,10 @@ def predict_fold(fold, gpu_id: int):
             results_path = os.path.join(
                 DATA_DIR,
                 "results",
+                GAME_NAME,
                 video_info["video"],
                 "action",
-                "results_spotting_my_filtered_action.json",
+                "results_spotting_my_filtered_action3.json",
             )
             if os.path.exists(results_path):
                 with open(results_path, "r") as file:
@@ -142,7 +148,7 @@ def predict_fold(fold, gpu_id: int):
             )
             save_path = os.path.join(
                 prediction_dir,
-                f"results_spotting_my_filtered_{target}.json",
+                f"results_spotting_my_filtered_{target}3.json",
             )
             save_json_snb(pred_list, video_info, save_path, target)
 
@@ -243,8 +249,14 @@ def goal_replacement(match_info, results_path: str):
 
     with open(results_path, "r") as file:
         results = json.load(file)
+    shot_team_own_side = None
     for i, result in enumerate(results["predictions"]):
-        if result["action"] == "GOAL":
+        if result["action"] == "SHOT":
+            shot_team_own_side = result["team_own_side"]
+            shot_team = result["team"]
+            print("shot_team_own_side:", shot_team_own_side)
+            print("shot_team:", shot_team)
+        elif result["action"] == "GOAL":
             if not i == len(results["predictions"]) - 1:
                 next_action = results["predictions"][i + 1]["action"]
                 if next_action == "BALL PLAYER BLOCK":
@@ -272,29 +284,28 @@ def goal_replacement(match_info, results_path: str):
                         "predictions"
                     ][i + 1]["hard_confidence"]
                     results["predictions"][i + 1]["action"] = "GOAL"
-                    results["predictions"][i + 1]["team"] = results["predictions"][i][
-                        "team"
-                    ]
-                    results["predictions"][i + 1]["team_own_side"] = results[
-                        "predictions"
-                    ][i]["team_own_side"]
+                    results["predictions"][i + 1]["team"] = shot_team
+                    results["predictions"][i + 1]["team_own_side"] = shot_team_own_side
                     results["predictions"][i + 1]["location"] = results["predictions"][
                         i
                     ]["location"]
                     results["predictions"][i + 1]["action_confidence"] = results[
                         "predictions"
                     ][i]["action_confidence"]
-                    results["predictions"][i + 1]["team_confidence"] = results[
-                        "predictions"
-                    ][i]["team_confidence"]
+                    results["predictions"][i + 1]["team_confidence"] = 1.0
                     results["predictions"][i + 1]["easy_confidence"] = results[
                         "predictions"
                     ][i]["easy_confidence"]
                     results["predictions"][i + 1]["hard_confidence"] = results[
                         "predictions"
                     ][i]["hard_confidence"]
+                else:
+                    if shot_team_own_side is not None:
+                        results["predictions"][i]["team"] = shot_team
+                        results["predictions"][i]["team_own_side"] = shot_team_own_side
+                        results["predictions"][i]["team_confidence"] = 1.0
 
-        if result["action"] == "BALL PLAYER BLOCK":
+        elif result["action"] == "BALL PLAYER BLOCK":
             previous_team_own_side = results["predictions"][i - 1]["team_own_side"]
             if previous_team_own_side == "right":
                 results["predictions"][i]["team_own_side"] = "left"
@@ -311,15 +322,21 @@ if __name__ == "__main__":
     time_start = time.time()
     args = parse_arguments()
     DATA_DIR = Path(args.data_dir)
+    LEAGUE_NAME = args.video_dir.split("/")[-2]
+    GAME_NAME = args.video_dir.split("/")[-1]
+    video_info_path = os.path.join(
+        DATA_DIR, "results", "video_info", GAME_NAME, "video_info.json"
+    )
+    args.video_info_path = video_info_path
+
     inference_extract(args)
     action_spotting(args)
-    predict_fold(args.folds, args.gpu_id)
-    match_info_path = os.path.join(
-        DATA_DIR, "results", "video_info", "sample_game_info.json"
-    )
-
-    with open(match_info_path) as file:
-        match_infos = json.load(file)
+    predict_fold(args.video_dir, args.folds, args.gpu_id, args.video_info_path)
+    game_info_path = os.path.join(DATA_DIR, "results", "video_info", "game_info.json")
+    with open(video_info_path) as file:
+        video_infos = json.load(file)
+    with open(game_info_path) as file:
+        game_infos = json.load(file)
 
     if args.gsr:
         csv_path = os.path.join(
@@ -330,112 +347,138 @@ if __name__ == "__main__":
     else:
         save_filename = args.save_filename + ".json"
 
-    for match_info in match_infos:
-        game = match_info["video"]
-        game_dir = os.path.join(DATA_DIR, "results", game)
-        action_path = os.path.join(
-            game_dir, "action", "results_spotting_my_filtered_action.json"
-        )
-        easy_path = os.path.join(
-            game_dir,
-            "location_easy",
-            "results_spotting_my_filtered_location_easy.json",
-        )
-        if not os.path.exists(easy_path):
-            continue
-
-        hard_path = os.path.join(
-            game_dir,
-            "location_hard",
-            "results_spotting_my_filtered_location_hard.json",
-        )
-        team_path = os.path.join(
-            game_dir, "team", "results_spotting_my_filtered_team.json"
-        )
-        save_path = os.path.join(game_dir, save_filename)
-        # if os.path.exists(save_path):
-        #     continue
-        out_put_dict = {}
-        with open(action_path, "r") as f:
-            action_dict = json.load(f)
-        if action_dict["predictions"][0]["frame"] < 15:
-            action_dict["predictions"] = action_dict["predictions"][1:]
-        with open(easy_path, "r") as f:
-            easy_dict = json.load(f)
-        with open(team_path, "r") as f:
-            team_dict = json.load(f)
-
-        out_put_dict["UrlLocal"] = easy_dict["UrlLocal"]
-        out_put_dict["predictions"] = []
-        with open(hard_path, "r") as f:
-            hard_dict = json.load(f)
-
-        for i, (action_pred, easy_pred, hard_pred, team_pred) in enumerate(
-            zip(
-                action_dict["predictions"],
-                easy_dict["predictions"],
-                hard_dict["predictions"],
-                team_dict["predictions"],
+    for game_info in game_infos:
+        game = game_info["game"].split("/")[-1]
+        for video_info in video_infos:
+            video_name = video_info["video"]
+            video_half = video_name.split("_")[0]
+            half_team_dict = game_info["half"][video_half]
+            game_dir = os.path.join(DATA_DIR, "results", GAME_NAME, video_name)
+            action_path = os.path.join(
+                game_dir, "action", "results_spotting_my_filtered_action3.json"
             )
-        ):
-            pred_dict = {}
-            pred_dict["gameTime"] = easy_pred["gameTime"]
-            pred_dict["position"] = action_pred["position"]
-            pred_dict["frame"] = easy_pred["frame"]
-            pred_dict["action"] = action_pred["action"]
-            pred_dict["team_own_side"] = team_pred["team"]
-            pred_dict["team"] = match_info[team_pred["team"]]
-            if args.gsr:  # teamは求まっているので、nameのみ
-                frame_num = int(action_pred["frame"])
-                frame_num = frame_num + 1  # frame_スタートを1からにする
-                frame_num = frame_num - 4  # 4フレーム前の情報をキーフレームと調整
+            easy_path = os.path.join(
+                game_dir,
+                "location_easy",
+                "results_spotting_my_filtered_location_easy3.json",
+            )
 
-                if action_pred["action"] == "OUT":
-                    pred_dict["name"] = "OUT"
-                    continue
-                elif action_pred["action"] == "PASS":
-                    range_list = range(-15, 2)
-                elif action_pred["action"] == "DRIVE":
-                    range_list = range(-5, 15)
-                else:
-                    range_list = range(-5, 10)
-                frame_info = get_name(df, frame_num, range_list, pred_dict["team"])
+            if not os.path.exists(easy_path):
+                continue
 
-                # すべてのframe_info[i]["name"]がNo_nameの場合、キーフレームから一番近い名前を取得
-                k = 5
-                while all([frame_info[i]["name"] == "No_name" for i in frame_info]):
-                    range_list = range(-15 - k, 15 + k)
+            hard_path = os.path.join(
+                game_dir,
+                "location_hard",
+                "results_spotting_my_filtered_location_hard3.json",
+            )
+            team_path = os.path.join(
+                game_dir, "team", "results_spotting_my_filtered_team3.json"
+            )
+            save_path = os.path.join(game_dir, save_filename)
+
+            out_put_dict = {}
+            with open(action_path, "r") as f:
+                action_dict = json.load(f)
+            if action_dict["predictions"] != []:
+                first_frame = 0
+                while action_dict["predictions"][first_frame]["frame"] < 15:
+                    first_frame += 1
+                action_dict["predictions"] = action_dict["predictions"][first_frame:]
+                final_frame = len(action_dict["predictions"]) - 1
+                while action_dict["predictions"][final_frame]["frame"] >= 734:
+                    final_frame -= 1
+                action_dict["predictions"] = action_dict["predictions"][
+                    : final_frame + 1
+                ]
+            with open(easy_path, "r") as f:
+                easy_dict = json.load(f)
+                print("len(easy_dict['predictions']):", len(easy_dict["predictions"]))
+            with open(team_path, "r") as f:
+                team_dict = json.load(f)
+
+            out_put_dict["UrlLocal"] = easy_dict["UrlLocal"]
+            out_put_dict["predictions"] = []
+            with open(hard_path, "r") as f:
+                hard_dict = json.load(f)
+
+            assert len(action_dict["predictions"]) == len(
+                easy_dict["predictions"]
+            ), f"actionとeasyの予測数が異なります:{video_name}"
+            assert len(action_dict["predictions"]) == len(
+                hard_dict["predictions"]
+            ), "actionとhardの予測数が異なります"
+            assert len(action_dict["predictions"]) == len(
+                team_dict["predictions"]
+            ), "actionとteamの予測数が異なります"
+            for i, (action_pred, easy_pred, hard_pred, team_pred) in enumerate(
+                zip(
+                    action_dict["predictions"],
+                    easy_dict["predictions"],
+                    hard_dict["predictions"],
+                    team_dict["predictions"],
+                )
+            ):
+
+                pred_dict = {}
+                pred_dict["gameTime"] = easy_pred["gameTime"]
+                pred_dict["position"] = action_pred["position"]
+                pred_dict["frame"] = easy_pred["frame"]
+                pred_dict["action"] = action_pred["action"]
+                pred_dict["team_own_side"] = team_pred["team"]
+                pred_dict["team"] = half_team_dict[team_pred["team"]]
+                if args.gsr:  # teamは求まっているので、nameのみ
+                    frame_num = int(action_pred["frame"])
+                    frame_num = frame_num + 1  # frame_スタートを1からにする
+                    frame_num = frame_num - 4  # 4フレーム前の情報をキーフレームと調整
+
+                    if action_pred["action"] == "OUT":
+                        pred_dict["name"] = "OUT"
+                        continue
+                    elif action_pred["action"] == "PASS":
+                        range_list = range(-15, 2)
+                    elif action_pred["action"] == "DRIVE":
+                        range_list = range(-5, 15)
+                    else:
+                        range_list = range(-5, 10)
                     frame_info = get_name(df, frame_num, range_list, pred_dict["team"])
 
-                    k += 5
-                # frame_infoのnameの中で最も多いvalueを出力
-                name = []
-                for i in frame_info:
-                    if frame_info[i]["name"] == "No_name":
-                        continue
-                    name.append(frame_info[i]["name"])
-                # 最も多い要素を取得
-                if name:
-                    name = max(set(name), key=name.count)
-                pred_dict["name"] = name
+                    # すべてのframe_info[i]["name"]がNo_nameの場合、キーフレームから一番近い名前を取得
+                    k = 5
+                    while all([frame_info[i]["name"] == "No_name" for i in frame_info]):
+                        range_list = range(-15 - k, 15 + k)
+                        frame_info = get_name(
+                            df, frame_num, range_list, pred_dict["team"]
+                        )
 
-            # locationの処理
-            if easy_pred["location"] == "0":
-                pred_dict["location"] = "OUT"
-            else:
-                pred_dict["location"] = (
-                    easy_pred["location"] + " " + hard_pred["location"]
-                )
-            pred_dict["action_confidence"] = action_pred["action_score"]
-            pred_dict["team_confidence"] = team_pred["confidence"]
-            pred_dict["easy_confidence"] = easy_pred["confidence"]
-            pred_dict["hard_confidence"] = hard_pred["confidence"]
-            out_put_dict["predictions"].append(pred_dict)
+                        k += 5
+                    # frame_infoのnameの中で最も多いvalueを出力
+                    name = []
+                    for i in frame_info:
+                        if frame_info[i]["name"] == "No_name":
+                            continue
+                        name.append(frame_info[i]["name"])
+                    # 最も多い要素を取得
+                    if name:
+                        name = max(set(name), key=name.count)
+                    pred_dict["name"] = name
 
-        print("Save path:", save_path)
-        with open(save_path, "w") as f:
-            json.dump(out_put_dict, f, indent=4)
-        goal_replacement(match_info, save_path)
+                # locationの処理
+                if easy_pred["location"] == "0":
+                    pred_dict["location"] = "OUT"
+                else:
+                    pred_dict["location"] = (
+                        easy_pred["location"] + " " + hard_pred["location"]
+                    )
+                pred_dict["action_confidence"] = action_pred["action_score"]
+                pred_dict["team_confidence"] = team_pred["confidence"]
+                pred_dict["easy_confidence"] = easy_pred["confidence"]
+                pred_dict["hard_confidence"] = hard_pred["confidence"]
+                out_put_dict["predictions"].append(pred_dict)
+
+            print("Save path:", save_path)
+            with open(save_path, "w") as f:
+                json.dump(out_put_dict, f, indent=4)
+            goal_replacement(half_team_dict, save_path)
 
     print("Finished")
     print("Time:", time.time() - time_start)

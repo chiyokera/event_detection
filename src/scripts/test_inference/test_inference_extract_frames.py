@@ -43,12 +43,6 @@ def get_args():
         default="../../../data/sample/frames",
         help="Path to write frames. Dry run if None.",
     )
-    parser.add_argument(
-        "-i",
-        "--video_info_path",
-        default="../../../data/sample/results/video_info/video_info.json",
-        help="Path to write video info. Dry run if None.",
-    )
     parser.add_argument("--sample_fps", type=int, default=25)
     parser.add_argument("--recalc_fps", action="store_true")
     parser.add_argument("-j", "--num_workers", type=int, default=os.cpu_count() // 4)
@@ -166,52 +160,42 @@ def worker(args):
     return video_name, num_frames
 
 
-def inference_extract(args):
+def test_inference_extract(args):
     video_dir = args.video_dir
-    out_dir = args.frames_out_dir
     sample_fps = args.sample_fps
     recalc_fps = args.recalc_fps
     num_workers = args.num_workers
-    video_info_path = args.video_info_path
+
     global RECALC_FPS_ONLY
     RECALC_FPS_ONLY = recalc_fps
-    VIDEO_INFO_PATH = video_info_path
+
+    VIDEO_FILE_NAME = "720p.mp4"
     worker_args = []
     label_files = []
-    for sample_video in os.listdir(video_dir):
-        if (not (".mp4" in sample_video)) or ("224" in sample_video):
-            continue
-        if os.path.exists(VIDEO_INFO_PATH):
-            frame_exists = False
-            with open(VIDEO_INFO_PATH, "r") as f:
-                label_files = json.load(f)
-                for label in label_files:
-                    if label["video"] == sample_video.split(".")[0]:
-                        frame_exists = True
-                        break
-            if frame_exists:
-                continue
-
-        # label_dict = {}
-        video_name = sample_video
-        out_frames_dir = os.path.join(out_dir, video_name.split(".")[0])
+    test_games = [
+        "2019-10-01 - Reading - Fulham",
+        "2019-10-01 - Stoke City - Huddersfield Town",
+    ]
+    for game in test_games:
+        video_path = os.path.join(video_dir, game, VIDEO_FILE_NAME)
+        out_frames_dir = os.path.join(video_dir, "test_720p_frames", game)
         os.makedirs(out_frames_dir, exist_ok=True)
-        # label_dict["video"] = video_name.split(".")[0]
-        video_path = os.path.join(video_dir, sample_video)
-        vc = cv2.VideoCapture(video_path)
-        # label_dict["num_frames"] = num_frames
-        # label_files.append(label_dict)
-        vc.release()
+        k_frame_path = os.path.join(
+            out_frames_dir, "frame{}.jpg".format(FRAME_RETRY_THRESHOLD)
+        )
+        if os.path.exists(k_frame_path):
+            print("Already done:", game)
+            continue
 
         worker_args.append(
             (
-                video_name,
+                game,
                 video_path,
                 out_frames_dir,  # out_dir to save frames
                 sample_fps,
             )
         )
-    print("Total videos to process:", worker_args)
+
     if len(worker_args) == 0:
         print("All videos are already processed!")
         return
@@ -223,13 +207,16 @@ def inference_extract(args):
             label_files.append(
                 {"video": video_name.split(".")[0], "num_frames": num_frame}
             )
-            pass
 
-    with open(VIDEO_INFO_PATH, "w") as f:
+    video_info_path = os.path.join(
+        "../../../data/team_location_detection/soccernet/england_efl/2019-2020",
+        "test_video_info.json",
+    )
+    with open(video_info_path, "w") as f:
         json.dump(label_files, f)
     print("Done!")
 
 
 if __name__ == "__main__":
     args = get_args()
-    inference_extract(args)
+    test_inference_extract(args)

@@ -1,0 +1,67 @@
+[2025-05-11 17:48:22,548][INFO]: train - epoch: 0, lr: 2.1435e-05, train_loss: 0.1496112
+[2025-05-11 18:04:23,615][INFO]: train - epoch: 1, lr: 4.287e-05, train_loss: 0.1293254
+[2025-05-11 18:20:17,264][INFO]: train - epoch: 2, lr: 6.4306e-05, train_loss: 0.1237363
+[2025-05-11 18:36:20,332][INFO]: train - epoch: 3, lr: 8.5741e-05, train_loss: 0.1225849
+[2025-05-11 18:52:22,025][INFO]: train - epoch: 4, lr: 0.00010718, train_loss: 0.1157437
+[2025-05-11 19:08:28,003][INFO]: train - epoch: 5, lr: 0.00012861, train_loss: 0.1079634
+[2025-05-11 19:24:28,956][INFO]: train - epoch: 6, lr: 0.00015005, train_loss: 0.1052091
+[2025-05-11 19:43:37,372][INFO]: train - epoch: 0, lr: 0.00014913, train_loss: 0.1019167
+[2025-05-11 19:49:30,707][INFO]: val - epoch: 0, val_loss: 0.1488277, val_average_precision: 0.7999742, val_average_precision_right: 0.8289321, val_average_precision_left: 0.7710162, val_binary_accuracy: 0.7155809, val_binary_accuracy_right: 0.7259906, val_binary_accuracy_left: 0.7051713
+[2025-05-11 19:49:31,705][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-000-0.799974.pth'
+[2025-05-11 20:02:50,390][INFO]: train - epoch: 1, lr: 0.00014641, train_loss: 0.09849447
+[2025-05-11 20:08:35,575][INFO]: val - epoch: 1, val_loss: 0.1511062, val_average_precision: 0.8210533, val_average_precision_right: 0.8461801, val_average_precision_left: 0.7959266, val_binary_accuracy: 0.726998, val_binary_accuracy_right: 0.7293486, val_binary_accuracy_left: 0.7246474
+[2025-05-11 20:08:36,087][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-001-0.821053.pth'
+[2025-05-11 20:21:56,412][INFO]: train - epoch: 2, lr: 0.00014195, train_loss: 0.0936927
+[2025-05-11 20:27:45,603][INFO]: val - epoch: 2, val_loss: 0.1472329, val_average_precision: 0.8475654, val_average_precision_right: 0.8687697, val_average_precision_left: 0.8263611, val_binary_accuracy: 0.7609134, val_binary_accuracy_right: 0.7656145, val_binary_accuracy_left: 0.7562122
+[2025-05-11 20:27:46,597][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-002-0.847565.pth'
+[2025-05-11 20:41:03,847][INFO]: train - epoch: 3, lr: 0.00013585, train_loss: 0.087182
+[2025-05-11 20:46:51,853][INFO]: val - epoch: 3, val_loss: 0.1558956, val_average_precision: 0.8459887, val_average_precision_right: 0.8635116, val_average_precision_left: 0.8284658, val_binary_accuracy: 0.7552048, val_binary_accuracy_right: 0.7602418, val_binary_accuracy_left: 0.7501679
+[2025-05-11 20:46:52,363][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-003-0.845989.pth'
+[2025-05-11 21:00:16,064][INFO]: train - epoch: 4, lr: 0.00012828, train_loss: 0.08279104
+[2025-05-11 21:06:02,553][INFO]: val - epoch: 4, val_loss: 0.1460935, val_average_precision: 0.8604416, val_average_precision_right: 0.8823375, val_average_precision_left: 0.8385457, val_binary_accuracy: 0.7635997, val_binary_accuracy_right: 0.7703156, val_binary_accuracy_left: 0.7568838
+[2025-05-11 21:06:03,075][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-004-0.860442.pth'
+[2025-05-11 21:20:11,469][INFO]: train - epoch: 5, lr: 0.00011941, train_loss: 0.08430596
+[2025-05-11 21:29:40,125][INFO]: val - epoch: 5, val_loss: 0.1473665, val_average_precision: 0.8614705, val_average_precision_right: 0.8872183, val_average_precision_left: 0.8357226, val_binary_accuracy: 0.7541974, val_binary_accuracy_right: 0.7649429, val_binary_accuracy_left: 0.743452
+[2025-05-11 21:29:40,862][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-005-0.861470.pth'
+[2025-05-11 21:49:55,915][INFO]: train - epoch: 6, lr: 0.00010947, train_loss: 0.08210237
+[2025-05-11 21:59:18,026][INFO]: val - epoch: 6, val_loss: 0.1375587, val_average_precision: 0.8817042, val_average_precision_right: 0.8978526, val_average_precision_left: 0.8655558, val_binary_accuracy: 0.77636, val_binary_accuracy_right: 0.7857623, val_binary_accuracy_left: 0.7669577
+[2025-05-11 21:59:18,556][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-006-0.881704.pth'
+[2025-05-11 22:19:42,134][INFO]: train - epoch: 7, lr: 9.8697e-05, train_loss: 0.0775576
+[2025-05-11 22:29:08,272][INFO]: val - epoch: 7, val_loss: 0.1440872, val_average_precision: 0.8711809, val_average_precision_right: 0.8857954, val_average_precision_left: 0.8565665, val_binary_accuracy: 0.773002, val_binary_accuracy_right: 0.7750168, val_binary_accuracy_left: 0.7709872
+[2025-05-11 22:29:08,806][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-007-0.871181.pth'
+[2025-05-11 22:50:09,028][INFO]: train - epoch: 8, lr: 8.736e-05, train_loss: 0.0759898
+[2025-05-11 22:59:53,509][INFO]: val - epoch: 8, val_loss: 0.1473178, val_average_precision: 0.87338, val_average_precision_right: 0.8871608, val_average_precision_left: 0.8595991, val_binary_accuracy: 0.7693083, val_binary_accuracy_right: 0.7656145, val_binary_accuracy_left: 0.773002
+[2025-05-11 22:59:54,059][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-008-0.873380.pth'
+[2025-05-11 23:21:24,822][INFO]: train - epoch: 9, lr: 7.5737e-05, train_loss: 0.07320602
+[2025-05-11 23:30:54,311][INFO]: val - epoch: 9, val_loss: 0.1445115, val_average_precision: 0.8830784, val_average_precision_right: 0.8965842, val_average_precision_left: 0.8695726, val_binary_accuracy: 0.7787105, val_binary_accuracy_right: 0.7709872, val_binary_accuracy_left: 0.7864338
+[2025-05-11 23:30:54,882][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-009-0.883078.pth'
+[2025-05-11 23:49:38,899][INFO]: train - epoch: 10, lr: 6.4115e-05, train_loss: 0.06870151
+[2025-05-11 23:58:46,841][INFO]: val - epoch: 10, val_loss: 0.1769821, val_average_precision: 0.8853279, val_average_precision_right: 0.8932013, val_average_precision_left: 0.8774545, val_binary_accuracy: 0.7840833, val_binary_accuracy_right: 0.7837475, val_binary_accuracy_left: 0.7844191
+[2025-05-11 23:58:47,883][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-010-0.885328.pth'
+[2025-05-12 00:18:00,652][INFO]: train - epoch: 11, lr: 5.278e-05, train_loss: 0.06514685
+[2025-05-12 00:26:41,897][INFO]: val - epoch: 11, val_loss: 0.1838919, val_average_precision: 0.8860125, val_average_precision_right: 0.8978166, val_average_precision_left: 0.8742084, val_binary_accuracy: 0.7850907, val_binary_accuracy_right: 0.7918066, val_binary_accuracy_left: 0.7783747
+[2025-05-12 00:26:42,486][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-011-0.886013.pth'
+[2025-05-12 00:46:28,858][INFO]: train - epoch: 12, lr: 4.2012e-05, train_loss: 0.06444
+[2025-05-12 00:54:41,256][INFO]: val - epoch: 12, val_loss: 0.1821714, val_average_precision: 0.8781577, val_average_precision_right: 0.8896455, val_average_precision_left: 0.8666698, val_binary_accuracy: 0.7726662, val_binary_accuracy_right: 0.7709872, val_binary_accuracy_left: 0.7743452
+[2025-05-12 00:54:41,838][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-012-0.878158.pth'
+[2025-05-12 01:15:07,946][INFO]: train - epoch: 13, lr: 3.2075e-05, train_loss: 0.06298453
+[2025-05-12 01:22:59,595][INFO]: val - epoch: 13, val_loss: 0.1800129, val_average_precision: 0.8820962, val_average_precision_right: 0.8909651, val_average_precision_left: 0.8732272, val_binary_accuracy: 0.7672935, val_binary_accuracy_right: 0.7669577, val_binary_accuracy_left: 0.7676293
+[2025-05-12 01:23:00,180][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-013-0.882096.pth'
+[2025-05-12 01:43:46,556][INFO]: train - epoch: 14, lr: 2.3216e-05, train_loss: 0.06032539
+[2025-05-12 01:51:21,748][INFO]: val - epoch: 14, val_loss: 0.1716077, val_average_precision: 0.8868353, val_average_precision_right: 0.8984739, val_average_precision_left: 0.8751967, val_binary_accuracy: 0.7770316, val_binary_accuracy_right: 0.7756884, val_binary_accuracy_left: 0.7783747
+[2025-05-12 01:51:22,513][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-014-0.886835.pth'
+[2025-05-12 02:12:30,340][INFO]: train - epoch: 15, lr: 1.5651e-05, train_loss: 0.05801207
+[2025-05-12 02:19:46,103][INFO]: val - epoch: 15, val_loss: 0.1737279, val_average_precision: 0.88964, val_average_precision_right: 0.8990405, val_average_precision_left: 0.8802396, val_binary_accuracy: 0.7787105, val_binary_accuracy_right: 0.7756884, val_binary_accuracy_left: 0.7817327
+[2025-05-12 02:19:47,163][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-015-0.889640.pth'
+[2025-05-12 02:41:13,139][INFO]: train - epoch: 16, lr: 9.5673e-06, train_loss: 0.05862328
+[2025-05-12 02:48:14,448][INFO]: val - epoch: 16, val_loss: 0.1750078, val_average_precision: 0.8942755, val_average_precision_right: 0.9015199, val_average_precision_left: 0.8870312, val_binary_accuracy: 0.7897918, val_binary_accuracy_right: 0.7871054, val_binary_accuracy_left: 0.7924782
+[2025-05-12 02:48:15,018][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-016-0.894276.pth'
+[2025-05-12 03:09:44,685][INFO]: train - epoch: 17, lr: 5.115e-06, train_loss: 0.0571426
+[2025-05-12 03:16:54,546][INFO]: val - epoch: 17, val_loss: 0.1799708, val_average_precision: 0.8961588, val_average_precision_right: 0.902222, val_average_precision_left: 0.8900955, val_binary_accuracy: 0.7907992, val_binary_accuracy_right: 0.7891202, val_binary_accuracy_left: 0.7924782
+[2025-05-12 03:16:55,599][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-017-0.896159.pth'
+[2025-05-12 03:38:13,841][INFO]: train - epoch: 18, lr: 2.4037e-06, train_loss: 0.05665819
+[2025-05-12 03:45:39,433][INFO]: val - epoch: 18, val_loss: 0.1822677, val_average_precision: 0.8953501, val_average_precision_right: 0.9017697, val_average_precision_left: 0.8889305, val_binary_accuracy: 0.7897918, val_binary_accuracy_right: 0.787777, val_binary_accuracy_left: 0.7918066
+[2025-05-12 03:45:40,482][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-018-0.895350.pth'
+[2025-05-12 04:06:47,638][INFO]: train - epoch: 19, lr: 1.5e-06, train_loss: 0.05568788
+[2025-05-12 04:14:25,045][INFO]: val - epoch: 19, val_loss: 0.1806177, val_average_precision: 0.8965402, val_average_precision_right: 0.9037695, val_average_precision_left: 0.889311, val_binary_accuracy: 0.7914708, val_binary_accuracy_right: 0.787777, val_binary_accuracy_left: 0.7951645
+[2025-05-12 04:14:26,013][INFO]: Model saved to '/net/ilabnas3/ilabhome/tanaka/archive/event_detection/data/team_location_detection/experiments/ball_tuning_team/fold_team_train/model-019-0.896540.pth'

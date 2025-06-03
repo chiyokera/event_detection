@@ -76,7 +76,6 @@ def evaluate(
     num_classes = len(EVENT_DICTIONARY)
     print(f"num_calsses:{num_classes}")
     for game in tqdm(list_games):
-
         # # Load labels
         # if version==2:
         #     label_files = "Labels-v2.json"
@@ -160,6 +159,7 @@ def evaluate(
         # Get the closest action index
         for c in np.arange(label_half_1.shape[-1]):
             indexes = np.where(label_half_1[:, c] != 0)[0].tolist()
+
             if len(indexes) == 0:
                 continue
             indexes.insert(0, -indexes[0])
@@ -259,9 +259,8 @@ def label2vector(labels, num_classes=17, framerate=2, version=2, EVENT_DICTIONAR
 
     label_half1 = np.zeros((vector_size, num_classes))
     label_half2 = np.zeros((vector_size, num_classes))
-
+    print("len(labels)", len(labels["annotations"]))
     for annotation in labels["annotations"]:
-
         time = annotation["gameTime"]
         if num_classes == 12:
             event = annotation["label"]
@@ -327,9 +326,8 @@ def predictions2vector(
 
     prediction_half1 = np.zeros((vector_size, num_classes)) - 1
     prediction_half2 = np.zeros((vector_size, num_classes)) - 1
-
+    print("len(predictions)", len(predictions["predictions"]))
     for annotation in predictions["predictions"]:
-
         time = int(annotation["position"])
         if num_classes == 12:
             event = annotation["action"]

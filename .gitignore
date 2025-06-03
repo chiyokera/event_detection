@@ -28,10 +28,6 @@ data/voice_model/*
 
 !data/team_location_detection/
 data/team_location_detection/*
-!data/team_location_detection/predictions/
-data/team_location_detection/predictions/*
-!data/team_location_detection/predictions/.gitkeep
-
 !data/team_location_detection/experiments/
 data/team_location_detection/experiments/*
 

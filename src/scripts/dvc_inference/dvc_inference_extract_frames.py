@@ -39,7 +39,7 @@ def get_args():
     )
     parser.add_argument(
         "-o",
-        "--frames_out_dir",
+        "--frame_dir",
         default="../../../data/sample/frames",
         help="Path to write frames. Dry run if None.",
     )
@@ -168,7 +168,7 @@ def worker(args):
 
 def inference_extract(args):
     video_dir = args.video_dir
-    out_dir = args.frames_out_dir
+    out_dir = args.frame_dir
     sample_fps = args.sample_fps
     recalc_fps = args.recalc_fps
     num_workers = args.num_workers
@@ -187,6 +187,9 @@ def inference_extract(args):
                 label_files = json.load(f)
                 for label in label_files:
                     if label["video"] == sample_video.split(".")[0]:
+                        print(
+                            "Already processed: {}".format(sample_video.split(".")[0])
+                        )
                         frame_exists = True
                         break
             if frame_exists:

@@ -9,12 +9,12 @@ This repository let you try **Event Detection** and making commentator-like text
 #### 0.1 Install Library
 
 First of all, clone this git repository in your CDK.
-And note that you need following libraries to use this system for Team or Location Detection Task.
+And note that you need following libraries to use this system for Team or Location Detection Task. Specifically, PyNvCodec calls for NVDIA Drivers, NVIDIA GPUs and Supported Operating Systems (Windows and Linux)
 
 - FFmpeg
 - PyNvCodec
 
-So, please make new python env in your anaconda using below command
+So, please make new python env like following ways and run requirements.txt
 
 ```
 $ conda activate event_detection
@@ -28,16 +28,16 @@ $ python -m venv event_detection
 $ pip install -r requirements.txt
 ```
 
-If you get something trouble on FFmpeg or PyNvCodec install, please refer to the official documents([FFmpeg](https://www.ffmpeg.org/),  [PyNvCodec](https://docs.nvidia.com/video-technologies/pynvvideocodec/pynvc-api-prog-guide/index.html))
+If you get something trouble on FFmpeg or PyNvCodec install, please refer to the official documents ([FFmpeg](https://www.ffmpeg.org/),  [PyNvCodec](https://docs.nvidia.com/video-technologies/pynvvideocodec/pynvc-api-prog-guide/index.html))
 
 #### 0.2 Checkpoint(Model Param) Downloading
 
-There are 3 kinds of modules in this system. Download oh the `.pth` files from this Drive respectively and set them indicted repository. (Team or Location Detection Model: about 50MB, T-DEED_challenge: about 170MB, T-DEED_test: about 40MB)
+There are 3 kinds of modules in this system. Download the `.pth` files from this [Drive](https://drive.google.com/drive/folders/13mNx6O6_T4fiPRG2WLQxfcWg1_5McOGa?usp=sharing)/checkpoints respectively and set them indicted repository. (Team or Location Detection Model Weights: about 50MB, T-DEED_challenge: about 170MB, T-DEED_test: about 40MB)
 
 - T-DEED for Ball-Action Spotting
-  - SoccerNetBall_challenge2: trained 500 action spotting games and **7** ball-action spotting games
+  - SoccerNetBall_challenge2: Trained 500 action spotting games and **7** ball-action spotting games
     - Set the param at `data/tdeed/checkpoints/SoccerNetBall_challenge2`
-  - SoccerNetBall_test:trained 500 action spotting games and **5** ball-action spotting games
+  - SoccerNetBall_test: Trained 500 action spotting games and **5** ball-action spotting games
     - Set the param at `data/tdeed/checkpoints/SoccerNetBall_test`
 - Location Detection
   - easy: To detect ball location of the input 15 frames from `Right(half), Left, OUT`
@@ -115,17 +115,35 @@ Voice making and integration (Individual Video)
 $ python srt_to_wav_to_video.py --task {"action", "team", "location", "all"}
 ```
 
-
-
-### Extra: Training of Location or Team Detection Model
+### Extra 1: Training of Location or Team Detection Model
 
 If you want to train Location or Team Detection Model with SoccerNet2024 Dataset, please comply below indication. (※ Tdeed train file is also in this repository, but I haven't yet confirm that it works well.Sorry)
 
-#### E.1 Downloading SoccerNet2024 Dataset
+#### Extra 1.1 Downloading SoccerNet2024 Dataset
 
 - Video: Download Train, Valid and Test 7games video and annotation. For downloading, you need NDA password, so please fulfill this [Google form](https://docs.google.com/forms/d/e/1FAIpQLSfYFqjZNm4IgwGnyJXDPk2Ko_lZcbVtYX73w5lf6din5nxfmA/viewform) and set it at `--password_videos` argument.
   ```
   $ cd src/scripts/train/team_location_detection
   $ python download_ball_data.py --password_dir $[NDA] --without_challenge 
   ```
-- Team and Location Label: I modified original Label you can download by above file in order to train Location or Team detection model. Click this [Drive](https://drive.google.com/drive/folders/1vJ6i2vAl6XZk3NyErNGsKNfEFpECIWKh?usp=drive_link) and then download "england_efl/2019-2020/*" folder. Subsequently, set it in `data/team_location_detection/soccernet/england_efl/2019-2020/*(each game)`
+- Team and Location Label: I modified original Label you can download by above file in order to train Location or Team detection model. Click this [Drive](https://drive.google.com/drive/folders/1vJ6i2vAl6XZk3NyErNGsKNfEFpECIWKh?usp=drive_link)/soccernet/ and then download "england_efl/2019-2020/*" folder. Subsequently, set it in `data/team_location_detection/soccernet/england_efl/2019-2020/*(each game)`
+
+#### Extra 1.2 Training Some Module
+
+- Next, Let's train {location_easy, location_hard, location, team} model!:
+  - location_easy: Detect which half the ball is from  {right, left, out} 
+  - location_hard: Detect {center_midfield, top_midfield, bottom_midfield, top_corner, bottom_corner, edge of the box, top_box, bottom_box}
+  - location: Detect one region from 17 classes (right or left x location_hard + out)
+  - team: Detect which half is own half for the player involved in the events
+
+### Extra 2: Reconstruction of Test Results
+
+- **Benchmark**: To know the current model accuracy, we use modified SoccerNet Ball-Action Spotting Test Dataset
+- **Flow**: 
+  1. Making Results
+
+```
+cd inference_all.py 
+```
+
+  1. 

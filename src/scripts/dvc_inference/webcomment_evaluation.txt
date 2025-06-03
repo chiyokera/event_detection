@@ -1,0 +1,24 @@
+Downstreamタスク人手評価方法：チームと意味を分けて評価
+
+1. データセットを用意(20セット)
+    - Answer
+    - Answer-Anonymized
+    - MatchVision(SoTA)
+    - Ours(event Text + MatchVision)
+    - Ours-Anonymized
+
+2. チーム名の意味的正しさ
+    - AnswerとOursを比較
+    - 筆者自身で出力内のチームが正しいかをチェックする
+    - チーム名が違っても，そのチーム目線で意味的に正しければよしとする
+
+3. 匿名化した際の3文比較
+    - 映像とイベントテキストのペア(人名あり)をセットで並べる
+    - Answer-Anonymized, MatchVision, Ours-Anonymizedをランダムに並べる
+    - それぞれのテキストに対して，正確性・豊富性・おもしろさの3つの観点で1-5の5段階評価
+
+# To Dos 
+- テストデータセットをまとめる
+- テストデータセットに対してイベントテキストをつける
+- Agentにやらせる
+

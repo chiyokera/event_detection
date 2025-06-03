@@ -1,0 +1,36 @@
+## Location=OUTでAction=OUT以外のとき，ズームの可能性があるのでアクションのみを表示
+## Easy_Confidenceが0.4より小さいとき，表示しない
+## DRIVEが連続しているとき，1つ目が20%以下の時はイベントテキストをつくらず，2つ目から最後までを1人のドリブルとして見て，どこからどこまでドリブルしたかを書く．
+
+# making Event Text and Save
+# making Web-Comment
+def making_srt(path,):
+    event_text = []
+    path = integrated.json
+    with open(path) as f:
+        events = f.json()
+    
+    drive_events = []
+    drive_frag == False
+    for idx, event in enumerate(events):
+        action = event["action"]
+        if drive_frag == False and action == "DRIVE":
+            drive_events.append(event, idx)
+            drive_frag = True
+            continue
+        elif drive_frag == True and action == "DRIVE":
+            drive_events.append(event, idx)
+            continue
+        elif drive_frag == True and action != "DRIVE":
+            drive_frag = False
+        else:
+            continue
+            
+
+    for i, idx in enum(action_idx_list):
+        # Drive
+        if action_idx_list[i+1] - idx != 1:
+            drive_text_making()
+
+    
+    

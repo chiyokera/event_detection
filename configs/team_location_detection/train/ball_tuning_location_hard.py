@@ -30,7 +30,7 @@ config = dict(
             "multidim_stacker",
             {
                 "model_name": "tf_efficientnetv2_b0.in1k",
-                "num_classes": constants.num_location_easy_classes,
+                "num_classes": constants.num_location_hard_classes,
                 "num_frames": frame_stack_size,
                 "stack_size": 3,
                 "index_2d_features": 4,
@@ -59,7 +59,7 @@ config = dict(
                 "lr": get_lr(base_lr, batch_size),
             },
         ),
-        "device": ["cuda:1"],
+        "device": ["cuda:0"],
         "image_size": image_size,
         "frame_stack_size": frame_stack_size,
         "frame_stack_step": 2,
@@ -81,7 +81,7 @@ config = dict(
         "prob": 0.25,
     },
     pretrain_action_experiment="",
-    pretrain_ball_experiment="ball_tuning_location",
+    pretrain_ball_experiment="ball_tuning_location_easy",
     torch_compile={
         "backend": "inductor",
         "mode": "default",

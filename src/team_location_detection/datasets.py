@@ -4,7 +4,10 @@ from typing import Callable, Optional, Type
 
 import numpy as np
 import torch
-from team_location_detection.frame_fetchers import AbstractFrameFetcher, NvDecFrameFetcher
+from team_location_detection.frame_fetchers import (
+    AbstractFrameFetcher,
+    NvDecFrameFetcher,
+)
 from team_location_detection.indexes import FrameIndexShaker, StackIndexesGenerator
 from team_location_detection.target import VideoTarget
 from team_location_detection.utils import set_random_seed
@@ -123,7 +126,7 @@ class TrainActionDataset(ActionDataset):
             target_process_fn=target_process_fn,
             frames_process_fn=frames_process_fn,
         )
-        self.epoch_size = epoch_size
+        self.num_labels = sum([len(v["frame_index2action"]) for v in videos_data])
         self.frame_index_shaker = frame_index_shaker
 
         self.videos_sampling_weights = videos_sampling_weights
@@ -134,7 +137,7 @@ class TrainActionDataset(ActionDataset):
 
     # epoch単位でデータセットの長さを返す
     def __len__(self) -> int:
-        return self.epoch_size
+        return self.num_labels
 
     # ある整数を入力する、これはrandom.seedの値になるため、これを変えれば、randomが被らない
     # ランダムに試合番号(VideoIndex)を出力し、

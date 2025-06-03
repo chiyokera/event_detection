@@ -26,7 +26,6 @@ def get_game_videos_data(
         half = int(annotation["gameTime"].split(" - ")[0])
         halves_set.add(half)
         annotation["half"] = half
-    # half=1のみなのでhalves=[1]
     halves = sorted(halves_set)
 
     half2video_data = dict()
@@ -66,7 +65,7 @@ def get_game_videos_data(
         else:
             video_data["frame_index2action"][frame_index] = annotation[target]
 
-    # Annotationの間に一つずつ空のアクションを追加（validはしてる）
+    # Annotationの間に一つずつ空のアクションを追加
     if add_empty_actions:
         for half in halves:
             video_data = half2video_data[half]
