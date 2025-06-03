@@ -1,4 +1,4 @@
-# Play Event Detection Systems (:construction:This repository is constructing now)
+# Play Event Detection Systems (:construction: This repository is constructing now)
 
 This repository allows you to perform **Event Detection** and generate commentator-like text for your sample soccer videos. If you want to train your own models, you will also need to download the **SoccerNet** Video Dataset.
 
